@@ -18,7 +18,7 @@ const slides: Slide[] = [
         id: 1,
         icon: '/images/elements/iconTech.svg',
         image: '/images/elements/slider/parcoursGamifie.png',
-        title: 'Parcours gamifié',
+        title: 'Gamification',
         description:
             'Système de niveaux et progression, Défis et missions, monnaie virtuelle et classement de réputation !',
     },
@@ -33,9 +33,9 @@ const slides: Slide[] = [
         id: 3,
         icon: '/images/elements/iconCoucou.svg',
         image: '/images/elements/slider/pairApair.png',
-        title: 'Recevoir & donner',
+        title: 'Pair à Pair',
         description:
-            "Développer de nouvelles compétences : c'est à la portée de tout le monde !",
+            "Développer de nouvelles compétences : c'est à la portée de tout le monde ! Un échange de savoirs entre pairs.",
     },
 ]
 
@@ -54,9 +54,13 @@ export const OnboardingSlider: React.FC = () => {
     }
 
     return (
-        <div className="w-full max-w-md mx-auto">
+        <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto p-6">
             {/* Icône */}
-            <img src={icon} alt={title} className="w-12 h-12 mx-auto mb-4" />
+            <div className="w-full flex items-center justify-between mb-6">
+                <p className="w-1/4 text-mobile-small">Développe ton perso</p>
+                <img src={icon} alt={title} className="w-12 h-12 mx-auto mb-4" />
+                <p className="w-1/4 text-mobile-small">Gagne des avantages</p>
+            </div>
 
             {/* Barre de progression */}
             <div className="w-full h-2 bg-secondary/20 rounded-full mb-6">
@@ -67,7 +71,7 @@ export const OnboardingSlider: React.FC = () => {
             </div>
 
             {/* Carte */}
-            <div className="bg-primary rounded-2xl overflow-hidden shadow-lg">
+            <div className="bg-primary rounded-2xl overflow-hidden shadow-lg h-1/2 w-full">
                 <img src={image} alt={title} className="w-full h-48 object-cover" />
                 <div className="p-6">
                     <h3 className="text-mobile-h2 md:text-desktop-h2 font-bold text-white mb-2">
@@ -80,7 +84,7 @@ export const OnboardingSlider: React.FC = () => {
             </div>
 
             {/* Navigation */}
-            <div className="flex items-center justify-center space-x-4 mt-6 mb-4">
+            <div className="flex items-center justify-center space-x-4 mt-20 mb-4">
                 <button onClick={prev} className="text-secondary text-2xl focus:outline-none">
                     <FaChevronLeft />
                 </button>
