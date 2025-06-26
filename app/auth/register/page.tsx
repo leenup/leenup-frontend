@@ -59,8 +59,7 @@ export default function RegisterPage() {
                     <div className="flex items-center gap-3">
                         <Checkbox id="cgu" />
                         <label htmlFor="cgu" className="text-mobile-small md:text-desktop-small">
-                            J'accepte les conditions générales d'utilisation
-                        </label>
+                            J&apos;accepte les conditions générales d&apos;utilisation                        </label>
                     </div>
 
                     <Button className="w-full text-mobile-button md:text-desktop-button">
