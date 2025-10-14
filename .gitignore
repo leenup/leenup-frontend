@@ -1,42 +1,24 @@
-# Node
-node_modules/
+# Logs
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+lerna-debug.log*
 
-# Next.js
-.next/
-out/
-.vercel/
-.env.local
-.env.*.local
-.env
+node_modules
+dist
+dist-ssr
+*.local
 
-# Logs
-*.log
-
-# Test coverage
-coverage/
-
-# System files
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
-Thumbs.db
-
-# VSCode
-.vscode/
-
-# OS-specific
-.idea/
-*.swp
-
-# Docker
-docker-compose.override.yml
-*.orig
-
-# Jest cache
-.jest/
-
-# Build
-dist/
-build/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
