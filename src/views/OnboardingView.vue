@@ -1,32 +1,34 @@
 <template>
-  <div class="min-h-[100dvh] bg-surface-bg text-surface-fg">
-    <div class="container max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-10 grid md:grid-cols-[1fr_minmax(380px,520px)] gap-10 items-center">
-      <!-- Colonne gauche (pictos + barre progression) : masquée en mobile si souhaité -->
-      <aside class="hidden md:flex flex-col gap-8">
-        <img src="@/assets/brand/icons/iconTech.svg" alt="" class="h-16 opacity-80" />
-        <StepProgressBar :step="index" :total="slides.length" />
-        <img src="@/assets/brand/icons/iconJoyeux.svg" alt="" class="h-16 opacity-80" />
-        <StepProgressBar :step="index" :total="slides.length" />
-        <img src="@/assets/brand/icons/iconMusicien.svg" alt="" class="h-16 opacity-80" />
-        <StepProgressBar :step="index" :total="slides.length" />
-      </aside>
-
-      <!-- Colonne droite : slider -->
-      <main>
-        <OnboardingCarousel :slides="slides" @finish="goSignup" @update:modelValue="index = $event" />
-      </main>
-
-      <!-- Mobile : petite barre en haut -->
-      <div class="md:hidden col-span-2 mt-4">
-        <StepProgressBar :step="index" :total="slides.length" />
+  <div class="min-h-[100dvh] bg-surface-bg text-surface-fg flex flex-col">
+    <!-- Header : icône + progress -->
+    <header class="container max-w-5xl w-full px-4 md:px-6 py-4 items-center gap-4 flex flex-col justify-center">
+      <div class="flex justify-between w-1/2 gap-6">
+        <span class="text-xs">Développe ton perso</span>
+        <IconTech class="w-20 h-20 text-primary-600" />
+        <span class="text-xs">Gagne des avantages</span>
       </div>
-    </div>
+      <StepProgressBar :index="index" :total="slides.length" class="flex" :step="index" />
+    </header>
+    
+
+    <!-- Carte violette quasi plein écran -->
+    <main class="container max-w-5xl w-full px-4 md:px-6 flex-1 flex items-stretch h-full py-6">
+      <div class="w-full max-w-3xl mx-auto flex-1">
+        <div class="h-[calc(100dvh-160px)] md:h-[calc(100dvh-200px)]">
+          <OnboardingCarousel :slides="slides"
+            @change="(i:number)=> index = i"
+            @finish="goNextPage" />
+        </div>
+      </div>
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
 import OnboardingCarousel from '@/components/onboarding/OnboardingCarousel.vue'
 import StepProgressBar from '@/components/onboarding/StepProgressBar.vue'
+import IconTech from '@/components/icons/IconTech.vue'
+
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -51,5 +53,9 @@ const slides = [
   },
 ]
 
-const goSignup = () => router.push({ name: 'login' /* ou route d’inscription */ })
+// Au dernier “suivant”, on passe à la prochaine page (présentation cours/mentors)
+const goNextPage = () => {
+  // TODO: remplace 'onboarding-courses' par la vraie route quand elle existera
+  router.push({ name: 'onboarding-courses' })
+}
 </script>
