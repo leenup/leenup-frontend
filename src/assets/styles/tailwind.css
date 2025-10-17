@@ -21,3 +21,8 @@
   .overlay-medium { background: rgb(3 7 18 / 60%); }
   .overlay-light  { background: rgb(3 7 18 / 15%); }
 }
+@layer components {
+  .text-tag {
+    @apply text-xs font-semibold uppercase tracking-wide text-primary-600 w-full;
+  }
+}
