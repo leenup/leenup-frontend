@@ -1,19 +1,20 @@
 <template>
   <div class="min-h-[100dvh] bg-surface-bg text-surface-fg flex flex-col">
-    <!-- Header : icône + progress -->
-    <header class="container max-w-5xl w-full px-4 md:px-6 py-4 items-center gap-4 flex flex-col justify-center">
-      <div class="flex justify-between w-1/2 gap-6">
-        <span class="text-xs">Développe ton perso</span>
-        <IconTech class="w-20 h-20 text-primary-600" />
-        <span class="text-xs">Gagne des avantages</span>
+    <a class="w-10 h-10" href="/">
+      <IconHome class="w-20 h-20 text-primary-600 m-5" />
+    </a>
+    <header class="container max-w-5xl w-full px-4 md:px-6 py-4 flex flex-col items-center gap-4">
+      <div class="flex items-center justify-center gap-6 w-1/2">
+        <span class="text-sm hidden sm:inline">Développe ton perso</span>
+        <IconTech class="w-20 h-20 text-primary-600"/>
+        <span class="text-sm hidden sm:inline">Gagne des avantages</span>
       </div>
-      <StepProgressBar :index="index" :total="slides.length" class="flex" :step="index" />
+      <StepProgressBar :index="index" :total="slides.length" class="w-full" :step="index" />
     </header>
     
 
-    <!-- Carte violette quasi plein écran -->
-    <main class="container max-w-5xl w-full px-4 md:px-6 flex-1 flex items-stretch h-full py-6">
-      <div class="w-full max-w-3xl mx-auto flex-1">
+    <main class="container max-w-5xl w-full px-4 md:px-6 flex-1 flex items-stretch h-full">
+      <div class="w-full flex-1">
         <div class="h-[calc(100dvh-160px)] md:h-[calc(100dvh-200px)]">
           <OnboardingCarousel :slides="slides"
             @change="(i:number)=> index = i"
@@ -28,6 +29,7 @@
 import OnboardingCarousel from '@/components/onboarding/OnboardingCarousel.vue'
 import StepProgressBar from '@/components/onboarding/StepProgressBar.vue'
 import IconTech from '@/components/icons/IconTech.vue'
+import IconHome from '@/components/icons/IconHome.vue'
 
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'

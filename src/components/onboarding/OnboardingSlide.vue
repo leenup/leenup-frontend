@@ -1,5 +1,5 @@
 <template>
-  <article class="bg-primary text-white rounded-3xl p-6 flex flex-col items-center justify-between min-h-[70vh]">
+  <article class="bg-primary text-white rounded-3xl p-6 flex flex-col items-center justify-between min-h-[65vh]">
     <img v-if="image" :src="image" :alt="imageAlt || title"
          class="rounded-200 mb-4 w-full h-56 md:h-72 object-cover" />
     <div class="flex-1 flex flex-col w-full">

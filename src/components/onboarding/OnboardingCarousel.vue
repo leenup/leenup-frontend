@@ -2,7 +2,7 @@
   <div class="w-full select-none" @pointerdown="onPointerDown" @pointermove="onPointerMove" @pointerup="onPointerUp" @pointercancel="onPointerUp" @pointerleave="onPointerUp">
     <div class="relative overflow-hidden">
       <div class="flex transition-transform duration-300 ease-out" :style="{ transform: `translateX(-${current * 100}%)` }">
-        <div v-for="(s, i) in slides" :key="i" class="min-w-full px-1">
+        <div v-for="(s, i) in slides" :key="i" class="min-w-full">
           <OnboardingSlide v-bind="s">
             <div class="flex items-center justify-center mt-2">
               <ProgressDots :index="current" :total="slides.length" @select="goTo" />
