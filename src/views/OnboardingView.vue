@@ -18,7 +18,7 @@
         <div class="h-[calc(100dvh-160px)] md:h-[calc(100dvh-200px)]">
           <OnboardingCarousel :slides="slides"
             @change="(i:number)=> index = i"
-            @finish="goNextPage" />
+            @finish="goToPresentation" />
         </div>
       </div>
     </main>
@@ -55,9 +55,7 @@ const slides = [
   },
 ]
 
-// Au dernier “suivant”, on passe à la prochaine page (présentation cours/mentors)
-const goNextPage = () => {
-  // TODO: remplace 'onboarding-courses' par la vraie route quand elle existera
-  router.push({ name: 'onboarding-courses' })
+const goToPresentation = () => {
+  router.push({ name: 'presentation-mentorats' })
 }
 </script>

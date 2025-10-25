@@ -4,12 +4,19 @@ const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: () => import('@/views/HomeView.vue') },
   { path: '/about', name: 'about', component: () => import('@/views/AboutView.vue') },
 
-  // 👇 nouvelle route “Je découvre l’application”
+  // Discover Application - Slider
   {
     path: '/discover',
     name: 'onboarding',
     component: () => import('@/views/OnboardingView.vue'),
-    meta: { guestOnly: true }, // optionnel : accessible même non connecté
+    meta: { guestOnly: true },
+  },
+  // Discover Application - Mentorats Presentation
+  {
+    path: '/presentation-mentorats',
+    name: 'presentation-mentorats',
+    component: () => import('@/views/PresentationMentoratsView.vue'),
+    meta: { guestOnly: true },
   },
 ]
 
