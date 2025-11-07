@@ -1,0 +1,32 @@
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+
+export function useCarousel(length: number, options?: { loop?: boolean }) {
+  const current = ref(0)
+  const loop = options?.loop ?? false
+
+  const canPrev = computed(() => loop || current.value > 0)
+  const canNext = computed(() => loop || current.value < length - 1)
+
+  const next = () => { if (canNext.value) current.value = (current.value + 1) % length }
+  const prev = () => { if (canPrev.value) current.value = (current.value - 1 + length) % length }
+  const goTo = (i: number) => { if (i >= 0 && i < length) current.value = i }
+
+  // clavier (gauche/droite)
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key === 'ArrowRight') next()
+    if (e.key === 'ArrowLeft') prev()
+  }
+  onMounted(() => window.addEventListener('keydown', onKey))
+  onUnmounted(() => window.removeEventListener('keydown', onKey))
+
+  // swipe
+  let startX = 0, dx = 0
+  const onPointerDown = (e: PointerEvent) => { startX = e.clientX; dx = 0 }
+  const onPointerMove = (e: PointerEvent) => { if (startX) dx = e.clientX - startX }
+  const onPointerUp = () => {
+    if (Math.abs(dx) > 60) { dx < 0 ? next() : prev() }
+    startX = 0; dx = 0
+  }
+
+  return { current, next, prev, goTo, canPrev, canNext, onPointerDown, onPointerMove, onPointerUp }
+}
