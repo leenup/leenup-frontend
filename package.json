@@ -10,8 +10,10 @@
     "lint": "eslint . --ext .ts,.tsx,.vue --max-warnings=0",
     "format": "prettier --write .",
     "typecheck": "vue-tsc --noEmit",
-    "test": "vitest",
-    "test:unit": "vitest --ui --environment jsdom",
+    "test": "npm run test:unit",
+    "test:watch": "vitest --watch",
+    "test:unit": "vitest run",
+    "test:unit:report": "node scripts/prepare-test-results.mjs unit && vitest run --reporter=default --reporter=junit --outputFile=test-results/unit/junit.xml",
     "test:e2e": "playwright test",
     "postinstall": "playwright install --with-deps || echo 'Playwright install skipped'"
   },
