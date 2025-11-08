@@ -13,9 +13,9 @@
     </div>
 
     <div class="mt-5 flex items-center justify-between">
-      <Button variant="ghost" class="md:px-4" :disabled="!canPrev" @click="prev">Précédent</Button>
-      <Button variant="white" class="md:px-6" v-if="current < slides.length - 1" @click="next">Suivant</Button>
-      <Button variant="primary" class="md:px-6" v-else @click="$emit('finish')">Commencer</Button>
+      <Button variant="ghost" class="md:px-4 font-sans typography-button" :disabled="!canPrev" @click="prev">Précédent</Button>
+      <Button variant="white" class="md:px-6 font-sans typography-button" v-if="current < slides.length - 1" @click="next">Suivant</Button>
+      <Button variant="primary" class="md:px-6 font-sans typography-button" v-else @click="$emit('finish')">Commencer</Button>
     </div>
   </div>
 </template>

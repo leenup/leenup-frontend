@@ -1,7 +1,7 @@
 <template>
   <div :class="stackClass">
-    <Button variant="primary" class="w-full" @click="onEmail">Connexion E-mail</Button>
-    <Button variant="white" class="w-full flex items-center justify-center gap-2" @click="onGoogle">
+    <Button variant="primary" class="w-full font-sans typography-button" @click="onEmail">Connexion E-mail</Button>
+    <Button variant="white" class="w-full flex items-center justify-center gap-2 font-sans typography-button" @click="onGoogle">
       <img src="@/assets/brand/icons/google.svg" alt="" class="h-5 w-5" aria-hidden="true" />
       Connexion Google
     </Button>

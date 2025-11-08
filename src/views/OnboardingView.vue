@@ -1,13 +1,13 @@
 <template>
   <div class="min-h-[100dvh] bg-surface-bg text-surface-fg flex flex-col">
     <a class="w-10 h-10" href="/">
-      <IconHome class="w-20 h-20 text-primary-600 m-5" />
+      <IconHome class="w-20 h-20 text-primary-500 m-5" />
     </a>
     <header class="container max-w-5xl w-full px-4 md:px-6 py-4 flex flex-col items-center gap-4">
       <div class="flex items-center justify-center gap-6 w-1/2">
-        <span class="text-sm hidden sm:inline">Développe ton perso</span>
-        <IconTech class="w-20 h-20 text-primary-600"/>
-        <span class="text-sm hidden sm:inline">Gagne des avantages</span>
+        <span class="font-sans typography-small">Développe ton perso</span>
+        <IconTech class="w-20 h-20 text-primary-500"/>
+        <span class="font-sans typography-small hidden sm:inline">Gagne des avantages</span>
       </div>
       <StepProgressBar :index="index" :total="slides.length" class="w-full" :step="index" />
     </header>

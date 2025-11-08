@@ -2,12 +2,12 @@
   <div class="md:min-h-[80vh] flex flex-col md:flex-row">
     <section
       class="hidden md:flex md:relative md:flex-1 md:items-center md:justify-center min-h-screen relative flex-1 justify-center px-6 py-12 md:px-16
-             text-white bg-gradient-to-br from-[#29235C] via-[#4D63FF] to-[#8793ff]"
+             text-white bg-gradient-to-b from-primary-500 to-primary-400"
     >
       <div class="w-full max-w-xl flex flex-col justify-between">
         <AppBrand class="mb-8" />
         <div>
-          <p class="opacity-90 max-w-prose">
+          <p class="opacity-90 max-w-prose font-sans typography-text">
             Une solution complète co-construite avec nos utilisateurs.
           </p>
 
@@ -33,7 +33,7 @@
         <DividerText>ou</DividerText>
 
         <div class="flex justify-center mt-6">
-          <LinkArrow @click="discover">Je découvre Leenup</LinkArrow>
+          <LinkArrow class="font-sans button-text" @click="discover">Je découvre Leenup</LinkArrow>
         </div>
       </div>
     </section>
