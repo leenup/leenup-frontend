@@ -1,40 +1,62 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import axios from 'axios'
+import {
+  changePassword as changePasswordRequest,
+  deleteAccount as deleteAccountRequest,
+  fetchProfile as fetchProfileRequest,
+  login as loginRequest,
+  register as registerRequest,
+  updateProfile as updateProfileRequest,
+  type AuthUser,
+  type ChangePasswordPayload,
+  type CredentialsPayload,
+  type RegisterPayload,
+  type UpdateProfilePayload,
+} from '@/services/auth.service'
 
 export const useAuthStore = defineStore('auth', () => {
   // --- state
-    type User = { id: string | number; email: string; name?: string }
-    type LoginResponse =
-    | { token: string }
-    | { accessToken: string; refreshToken?: string; user?: User }
+  type User = AuthUser
 
-    const user = ref<User | null>(null)
-    const accessToken = ref<string | null>(null)
-    const refreshToken = ref<string | null>(null)
-    const loading = ref(false)
+  const storage = typeof window === 'undefined' ? null : window.localStorage
+
+  const user = ref<User | null>(null)
+  const accessToken = ref<string | null>(storage?.getItem('accessToken') ?? null)
+  const refreshToken = ref<string | null>(storage?.getItem('refreshToken') ?? null)
+  const loading = ref(false)
 
   // --- getters
   const isAuthenticated = computed(() => !!accessToken.value)
 
   // --- actions
-  async function login(payload: { email: string; password: string }) {
+  const persist = (key: string, value: string | null) => {
+    if (!storage) return
+    if (value === null) storage.removeItem(key)
+    else storage.setItem(key, value)
+  }
+
+  const ensureToken = () => {
+    if (!accessToken.value) throw new Error('Missing access token')
+    return accessToken.value
+  }
+
+  async function login(payload: CredentialsPayload) {
     try {
       loading.value = true
-      const { data } = await axios.post(
-        import.meta.env.VITE_AUTH_LOGIN_PATH || '/auth/login',
-        payload
-      )
+      const data = await loginRequest(payload)
 
-      // On adapte selon ta réponse backend (ici format générique)
-      accessToken.value = data.accessToken || data.token
-      refreshToken.value = data.refreshToken || null
-      user.value = data.user || null
+      const normalizedAccessToken =
+        'accessToken' in data ? data.accessToken : data.token
+      accessToken.value = normalizedAccessToken ?? null
 
-      // Persistance locale (optionnelle)
-      localStorage.setItem('accessToken', accessToken.value!)
-      if (refreshToken.value)
-        localStorage.setItem('refreshToken', refreshToken.value!)
+      const normalizedRefreshToken =
+        'refreshToken' in data ? data.refreshToken ?? null : null
+      refreshToken.value = normalizedRefreshToken
+
+      user.value = data.user ?? null
+
+      persist('accessToken', accessToken.value)
+      persist('refreshToken', refreshToken.value)
     } finally {
       loading.value = false
     }
@@ -44,21 +66,37 @@ export const useAuthStore = defineStore('auth', () => {
     accessToken.value = null
     refreshToken.value = null
     user.value = null
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
+    persist('accessToken', null)
+    persist('refreshToken', null)
   }
 
   async function fetchProfile() {
     if (!accessToken.value) return
-    const { data } = await axios.get(
-      import.meta.env.VITE_AUTH_ME_PATH || '/users/me',
-      {
-        headers: { Authorization: `Bearer ${accessToken.value}` },
-      }
-    )
-    user.value = data
+    const profile = await fetchProfileRequest(accessToken.value)
+    user.value = profile
   }
 
+  async function registerUser(payload: RegisterPayload) {
+    return registerRequest(payload)
+  }
+
+  async function updateProfile(payload: UpdateProfilePayload) {
+    const token = ensureToken()
+    const updated = await updateProfileRequest(token, payload)
+    user.value = updated
+    return updated
+  }
+
+  async function deleteAccount() {
+    const token = ensureToken()
+    await deleteAccountRequest(token)
+    logout()
+  }
+
+  async function changePassword(payload: ChangePasswordPayload) {
+    const token = ensureToken()
+    await changePasswordRequest(token, payload)
+  }
   return {
     user,
     accessToken,
@@ -68,5 +106,9 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     logout,
     fetchProfile,
+    registerUser,
+    updateProfile,
+    deleteAccount,
+    changePassword,
   }
 })

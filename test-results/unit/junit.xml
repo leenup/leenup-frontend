@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="15" failures="0" errors="0" time="0.0139419">
+    <testsuite name="tests/auth/auth.service.test.ts" timestamp="2025-11-07T14:27:31.208Z" hostname="CLEMENT" tests="8" failures="0" errors="0" skipped="0" time="0.0047687">
+        <testcase classname="tests/auth/auth.service.test.ts" name="auth.service &gt; login envoie les credentials à la bonne route" time="0.0019414">
+        </testcase>
+        <testcase classname="tests/auth/auth.service.test.ts" name="auth.service &gt; register appelle POST /register avec le payload" time="0.0002908">
+        </testcase>
+        <testcase classname="tests/auth/auth.service.test.ts" name="auth.service &gt; fetchProfile envoie le header Authorization" time="0.0003033">
+        </testcase>
+        <testcase classname="tests/auth/auth.service.test.ts" name="auth.service &gt; updateProfile patch /me et retourne le profil mis à jour" time="0.000217">
+        </testcase>
+        <testcase classname="tests/auth/auth.service.test.ts" name="auth.service &gt; deleteAccount supprime /me avec le token" time="0.0001663">
+        </testcase>
+        <testcase classname="tests/auth/auth.service.test.ts" name="auth.service &gt; changePassword envoie la requête vers /me/change-password" time="0.0001513">
+        </testcase>
+        <testcase classname="tests/auth/auth.service.test.ts" name="auth.service &gt; redirectToProvider redirige vers les URLs configurées" time="0.0003289">
+        </testcase>
+        <testcase classname="tests/auth/auth.service.test.ts" name="auth.service &gt; expose les URLs des providers" time="0.0000798">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/auth/auth.store.test.ts" timestamp="2025-11-07T14:27:31.210Z" hostname="CLEMENT" tests="7" failures="0" errors="0" skipped="0" time="0.0091732">
+        <testcase classname="tests/auth/auth.store.test.ts" name="useAuthStore &gt; login stocke les tokens et le user" time="0.0040088">
+        </testcase>
+        <testcase classname="tests/auth/auth.store.test.ts" name="useAuthStore &gt; fetchProfile met à jour le user lorsque le token est présent" time="0.0011359">
+        </testcase>
+        <testcase classname="tests/auth/auth.store.test.ts" name="useAuthStore &gt; registerUser délègue à register et retourne la réponse" time="0.0006583">
+        </testcase>
+        <testcase classname="tests/auth/auth.store.test.ts" name="useAuthStore &gt; updateProfile nécessite un token et met à jour le store" time="0.0005245">
+        </testcase>
+        <testcase classname="tests/auth/auth.store.test.ts" name="useAuthStore &gt; deleteAccount supprime le compte puis nettoie le state" time="0.0005916">
+        </testcase>
+        <testcase classname="tests/auth/auth.store.test.ts" name="useAuthStore &gt; changePassword exige un token" time="0.0004113">
+        </testcase>
+        <testcase classname="tests/auth/auth.store.test.ts" name="useAuthStore &gt; changePassword rejette si aucun token n’est présent" time="0.0009965">
+        </testcase>
+    </testsuite>
+</testsuites>
