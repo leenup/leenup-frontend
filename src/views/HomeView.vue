@@ -1,52 +1,38 @@
 <template>
-  <div class="md:min-h-[80vh] flex flex-col md:flex-row">
-    <section
-      class="hidden md:flex md:relative md:flex-1 md:items-center md:justify-center min-h-screen relative flex-1 justify-center px-6 py-12 md:px-16
-             text-white bg-gradient-to-b from-primary-500 to-primary-400"
-    >
-      <div class="w-full max-w-xl flex flex-col justify-between">
-        <AppBrand class="mb-8" />
-        <div>
-          <p class="opacity-90 max-w-prose font-sans typography-text">
-            Une solution complète co-construite avec nos utilisateurs.
-          </p>
+  <main class="flex min-h-screen flex-col items-center bg-surface-white px-6 py-12 text-center text-primary-600">
+    <AppBrand class="mb-12" />
 
-          <div class="mt-10 flex items-center gap-6 opacity-90">
-            <div class="flex items-center gap-2">
-              <span class="i">★ ★ ★ ★ ★</span>
-              <span class="text-sm">4,8/5</span>
-            </div>
-            <img src="@/assets/brand/logo/Logo.png" alt="Leenup" class="h-6 opacity-90" />
-          </div>
-        </div>
-      </div>
-    </section>
+    <div class="relative mb-5 flex items-center justify-center">
+      <img src="@/assets/brand/icons/homeApp.svg" alt="Illustration Leenup" class="h-60 w-60" />
+    </div>
 
-    <section
-      class="flex-1 flex flex-col items-center justify-center bg-white px-6 py-12 md:px-16"
-    >
-      <div class="w-full max-w-xl text-center md:text-left">
-        <AppBrand class="mb-10 md:hidden" />
+    <h2 class="font-sans font-bold leading-snug">
+      Lorem ipsum dolor sit amet,<br />
+      lorem ipsum dolor sit amet.
+    </h2>
 
-        <SocialButtons />
-
-        <DividerText>ou</DividerText>
-
-        <div class="flex justify-center mt-6">
-          <LinkArrow class="font-sans button-text" @click="discover">Je découvre Leenup</LinkArrow>
-        </div>
-      </div>
-    </section>
-  </div>
+    <div class="mt-10 flex w-full max-w-xs flex-col gap-4">
+      <button
+        class="rounded-400 bg-primary-600 px-6 py-3 text-surface-white shadow-e-200 transition hover:bg-primary-700"
+        @click="discover"
+      >
+        Découvrir
+      </button>
+      <button
+        class="rounded-400 bg-primary-50 px-6 py-3 text-primary-600 shadow-e-100 transition hover:bg-primary-100"
+        @click="login"
+      >
+        J’ai déjà un compte
+      </button>
+    </div>
+  </main>
 </template>
 
 <script setup lang="ts">
 import AppBrand from '@/components/brand/AppBrand.vue'
-import SocialButtons from '@/components/auth/SocialButtons.vue'
-import DividerText from '@/components/common/DividerText.vue'
-import LinkArrow from '@/components/common/LinkArrow.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const discover = () => router.push({ name: 'onboarding' })
+const login = () => router.push({ name: 'home' })
 </script>
