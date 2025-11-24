@@ -5,7 +5,7 @@
       :key="i"
       type="button"
       class="h-2 w-2 rounded-full transition-all"
-      :class="i === index ? 'bg-white/90 w-4' : 'bg-white/50'"
+      :class="i === index ? 'bg-primary-600 w-3' : 'bg-primary-300'"
       @click="$emit('select', i)"
       :aria-label="`Aller au slide ${i+1}`"
     />
