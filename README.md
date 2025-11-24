@@ -40,7 +40,7 @@ npm ci
 ## Theming & design tokens
 
 - La charte graphique (couleurs, rayons, ombres, typo, gradients) est centralisée dans `design-tokens.json`.
-- `tailwind.config.js` consomme ces tokens et génère des classes (`bg-primary-500`, `shadow-e-200`, `rounded-400`, `bg-hero-gradient`, etc.).
+- `tailwind.config.js` consomme ces tokens et génère des classes (`bg-cta-500`, `shadow-e-200`, `rounded-400`, `bg-hero-gradient`, etc.).
 - Les composants peuvent importer `designTokens` via `@/theme/tokens` pour accéder aux mêmes valeurs côté TypeScript.
 
 ## Ressources utiles
