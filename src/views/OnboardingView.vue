@@ -39,11 +39,25 @@
         <h3 class="text-2xl font-bold">Je deviens leener !</h3>
         <p class="mt-2 text-base text-surface-button/80">Choisis si tu veux d'abord apprendre ou enseigner</p>
         <div class="mt-8 flex flex-col gap-4">
-          <button class="flex items-center justify-center gap-3 rounded-400 bg-surface-panel px-6 py-3 text-primary-600 shadow-e-200 transition hover:bg-secondary-500">
+          <button
+            class="flex items-center justify-center gap-3 rounded-400 px-6 py-4 text-base font-semibold transition"
+            :class="onboardingStore.role === 'learner'
+              ? 'bg-cta-500 text-surface-button shadow-e-300'
+              : 'bg-surface-panel text-primary-600 shadow-e-200 hover:bg-secondary-500'"
+            :aria-pressed="onboardingStore.role === 'learner'"
+            @click="selectRole('learner')"
+          >
             <IconUser class="h-5 w-5" />
             Je veux apprendre
           </button>
-          <button class="flex items-center justify-center gap-3 rounded-400 bg-surface-panel px-6 py-3 text-primary-600 shadow-e-200 transition hover:bg-secondary-500">
+          <button
+            class="flex items-center justify-center gap-3 rounded-400 px-6 py-4 text-base font-semibold transition"
+            :class="onboardingStore.role === 'mentor'
+              ? 'bg-cta-500 text-surface-button shadow-e-300'
+              : 'bg-surface-panel text-primary-600 shadow-e-200 hover:bg-secondary-500'"
+            :aria-pressed="onboardingStore.role === 'mentor'"
+            @click="selectRole('mentor')"
+          >
             <IconUser class="h-5 w-5" />
             Je veux enseigner
           </button>
@@ -58,7 +72,12 @@
       </section>
 
       <section class="flex justify-center pb-8">
-        <button class="w-full max-w-md rounded-400 bg-cta-600 px-6 py-3 text-surface-button shadow-e-300 transition hover:bg-primary-700">
+        <button
+          class="w-full max-w-md rounded-400 px-6 py-3 text-surface-button shadow-e-300 transition"
+          :class="onboardingStore.role ? 'bg-cta-600 hover:bg-primary-700' : 'bg-secondary-500 text-primary-600 opacity-60 cursor-not-allowed'"
+          :disabled="!onboardingStore.role"
+          @click="startFlow"
+        >
           Commencer
         </button>
       </section>
@@ -71,9 +90,19 @@ import OnboardingCarousel from '@/components/onboarding/OnboardingCarousel.vue'
 import IconUser from '@/components/icons/IconHome.vue'
 import IconCoucou from '@/components/icons/IconCoucou.vue'
 import { useRouter } from 'vue-router'
+import { useOnboardingStore } from '@/stores/onboarding'
 
 const router = useRouter()
+const onboardingStore = useOnboardingStore()
 const goBack = () => router.back()
+const selectRole = (role: 'learner' | 'mentor') => { onboardingStore.setRole(role) }
+const startFlow = () => {
+  if (onboardingStore.role === 'learner') {
+    router.push({ name: 'onboarding-learner' })
+  } else if (onboardingStore.role === 'mentor') {
+    router.push({ name: 'onboarding-mentor' })
+  }
+}
 
 const slides = [
   {
