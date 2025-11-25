@@ -7,8 +7,18 @@ export function useCarousel(length: number, options?: { loop?: boolean }) {
   const canPrev = computed(() => loop || current.value > 0)
   const canNext = computed(() => loop || current.value < length - 1)
 
-  const next = () => { if (canNext.value) current.value = (current.value + 1) % length }
-  const prev = () => { if (canPrev.value) current.value = (current.value - 1 + length) % length }
+  const next = () => {
+    if (length === 0) return
+    if (loop) current.value = (current.value + 1) % length
+    else if (canNext.value) current.value += 1
+  }
+
+  const prev = () => {
+    if (length === 0) return
+    if (loop) current.value = (current.value - 1 + length) % length
+    else if (canPrev.value) current.value -= 1
+  }
+
   const goTo = (i: number) => { if (i >= 0 && i < length) current.value = i }
 
   // clavier (gauche/droite)

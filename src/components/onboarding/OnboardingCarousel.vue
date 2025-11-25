@@ -57,5 +57,5 @@ import { useCarousel } from '@/composables/useCarousel'
 type Slide = { title: string; description: string; image?: string; imageAlt?: string }
 const props = defineProps<{ slides: Slide[] }>()
 
-const { current, next, prev, goTo, canPrev, onPointerDown, onPointerMove, onPointerUp } = useCarousel(props.slides.length)
+const { current, next, prev, goTo, canPrev, onPointerDown, onPointerMove, onPointerUp } = useCarousel(props.slides.length, { loop: true })
 </script>
