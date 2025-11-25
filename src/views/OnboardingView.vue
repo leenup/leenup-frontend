@@ -1,17 +1,8 @@
 <template>
   <main class="min-h-screen bg-surface-bg text-primary-600">
     <div class="mx-auto flex max-w-3xl flex-col gap-8 px-6 py-8">
-      <header class="flex items-center justify-between">
-        <button
-          class="h-10 w-10 rounded-full border border-primary-200 text-primary-600 shadow-e-100 transition hover:bg-secondary-400"
-          @click="goBack"
-          aria-label="Revenir"
-        >
-          <span class="sr-only">Retour</span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </button>
+      <header class="flex items-center justify-start">
+        <BackButton />
       </header>
 
       <section class="grid items-center gap-6 md:grid-cols-[auto,1fr]">
@@ -39,11 +30,25 @@
         <h3 class="text-2xl font-bold">Je deviens leener !</h3>
         <p class="mt-2 text-base text-surface-button/80">Choisis si tu veux d'abord apprendre ou enseigner</p>
         <div class="mt-8 flex flex-col gap-4">
-          <button class="flex items-center justify-center gap-3 rounded-400 bg-surface-panel px-6 py-3 text-primary-600 shadow-e-200 transition hover:bg-secondary-500">
+          <button
+            class="flex items-center justify-center gap-3 rounded-400 px-6 py-4 text-base font-semibold transition"
+            :class="onboardingStore.role === 'leener'
+              ? 'bg-cta-500 text-surface-button shadow-e-300'
+              : 'bg-surface-panel text-primary-600 shadow-e-200 hover:bg-secondary-500'"
+            :aria-pressed="onboardingStore.role === 'leener'"
+            @click="selectRole('leener')"
+          >
             <IconUser class="h-5 w-5" />
             Je veux apprendre
           </button>
-          <button class="flex items-center justify-center gap-3 rounded-400 bg-surface-panel px-6 py-3 text-primary-600 shadow-e-200 transition hover:bg-secondary-500">
+          <button
+            class="flex items-center justify-center gap-3 rounded-400 px-6 py-4 text-base font-semibold transition"
+            :class="onboardingStore.role === 'mentor'
+              ? 'bg-cta-500 text-surface-button shadow-e-300'
+              : 'bg-surface-panel text-primary-600 shadow-e-200 hover:bg-secondary-500'"
+            :aria-pressed="onboardingStore.role === 'mentor'"
+            @click="selectRole('mentor')"
+          >
             <IconUser class="h-5 w-5" />
             Je veux enseigner
           </button>
@@ -58,7 +63,12 @@
       </section>
 
       <section class="flex justify-center pb-8">
-        <button class="w-full max-w-md rounded-400 bg-cta-600 px-6 py-3 text-surface-button shadow-e-300 transition hover:bg-primary-700">
+        <button
+          class="w-full max-w-md rounded-400 px-6 py-3 text-surface-button shadow-e-300 transition"
+          :class="onboardingStore.role ? 'bg-cta-600 hover:bg-primary-700' : 'bg-secondary-500 text-primary-600 opacity-60 cursor-not-allowed'"
+          :disabled="!onboardingStore.role"
+          @click="startFlow"
+        >
           Commencer
         </button>
       </section>
@@ -70,10 +80,21 @@
 import OnboardingCarousel from '@/components/onboarding/OnboardingCarousel.vue'
 import IconUser from '@/components/icons/IconHome.vue'
 import IconCoucou from '@/components/icons/IconCoucou.vue'
+import BackButton from '@/components/common/BackButton.vue'
 import { useRouter } from 'vue-router'
+import { useOnboardingStore } from '@/stores/onboarding'
 
 const router = useRouter()
+const onboardingStore = useOnboardingStore()
 const goBack = () => router.back()
+const selectRole = (role: 'leener' | 'mentor') => { onboardingStore.setRole(role) }
+const startFlow = () => {
+  if (onboardingStore.role === 'leener') {
+    router.push({ name: 'onboarding-leener' })
+  } else if (onboardingStore.role === 'mentor') {
+    router.push({ name: 'onboarding-mentor' })
+  }
+}
 
 const slides = [
   {

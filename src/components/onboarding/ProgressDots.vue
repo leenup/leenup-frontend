@@ -13,5 +13,5 @@
 </template>
 <script setup lang="ts">
 defineProps<{ index: number; total: number }>()
-defineEmits<{ (e: 'select', index: number): void }>()
+defineEmits<{ select: [index: number] }>()
 </script>
