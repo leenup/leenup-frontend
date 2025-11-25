@@ -1,17 +1,8 @@
 <template>
   <main class="min-h-screen bg-surface-bg text-primary-600">
     <div class="mx-auto flex max-w-3xl flex-col gap-8 px-6 py-8">
-      <header class="flex items-center justify-between">
-        <button
-          class="h-10 w-10 rounded-full border border-primary-200 text-primary-600 shadow-e-100 transition hover:bg-secondary-400"
-          @click="goBack"
-          aria-label="Revenir"
-        >
-          <span class="sr-only">Retour</span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </button>
+      <header class="flex items-center justify-start">
+        <BackButton />
       </header>
 
       <section class="grid items-center gap-6 md:grid-cols-[auto,1fr]">
@@ -89,6 +80,7 @@
 import OnboardingCarousel from '@/components/onboarding/OnboardingCarousel.vue'
 import IconUser from '@/components/icons/IconHome.vue'
 import IconCoucou from '@/components/icons/IconCoucou.vue'
+import BackButton from '@/components/common/BackButton.vue'
 import { useRouter } from 'vue-router'
 import { useOnboardingStore } from '@/stores/onboarding'
 
