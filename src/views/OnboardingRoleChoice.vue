@@ -7,11 +7,11 @@
       <div class="flex flex-col gap-4">
         <button
           class="flex items-center justify-center gap-3 rounded-400 px-6 py-4 text-base font-semibold transition"
-          :class="store.role === 'learner'
+          :class="store.role === 'leener'
             ? 'bg-cta-500 text-surface-button shadow-e-300'
             : 'bg-surface-panel text-primary-600 shadow-e-200 hover:bg-secondary-500'"
-          :aria-pressed="store.role === 'learner'"
-          @click="choose('learner')"
+          :aria-pressed="store.role === 'leener'"
+          @click="choose('leener')"
         >
           <IconUser class="h-5 w-5" />
           Je veux apprendre
@@ -51,7 +51,7 @@ import { useOnboardingStore } from '@/stores/onboarding'
 const router = useRouter()
 const store = useOnboardingStore()
 
-const choose = (role: 'learner' | 'mentor') => {
+const choose = (role: 'leener' | 'mentor') => {
   store.setRole(role)
 }
 

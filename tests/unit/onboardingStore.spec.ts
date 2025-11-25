@@ -14,10 +14,10 @@ describe('useOnboardingStore', () => {
     const store = useOnboardingStore()
     const spy = vi.spyOn(globalThis.localStorage, 'setItem')
 
-    store.setRole('learner')
+    store.setRole('leener')
 
-    expect(store.role).toBe('learner')
-    expect(spy).toHaveBeenCalledWith('onboarding_role', 'learner')
+    expect(store.role).toBe('leener')
+    expect(spy).toHaveBeenCalledWith('onboarding_role', 'leener')
   })
 
   it('loadFromStorage lit la valeur persistée', () => {

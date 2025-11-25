@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export type OnboardingRole = 'learner' | 'mentor' | null
+export type OnboardingRole = 'leener' | 'mentor' | null
 
 const STORAGE_KEY = 'onboarding_role'
 
@@ -18,7 +18,7 @@ export const useOnboardingStore = defineStore('onboarding', () => {
   const loadFromStorage = () => {
     if (globalThis.window === undefined) return
     const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored === 'learner' || stored === 'mentor') {
+    if (stored === 'leener' || stored === 'mentor') {
       role.value = stored
     }
   }

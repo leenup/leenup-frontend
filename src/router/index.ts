@@ -26,9 +26,9 @@ const routes: RouteRecordRaw[] = [
     meta: { guestOnly: true },
   },
   {
-    path: '/onboarding/learner',
-    name: 'onboarding-learner',
-    component: () => import('@/views/OnboardingLearner.vue'),
+    path: '/onboarding/leener',
+    name: 'onboarding-leener',
+    component: () => import('@/views/OnboardingLeener.vue'),
     meta: { guestOnly: true },
   },
   {
@@ -46,7 +46,7 @@ const router = createRouter({ history: createWebHistory(), routes })
 router.beforeEach((to) => {
   if (to.name === 'onboarding-start') {
     const store = useOnboardingStore()
-    if (store.role === 'learner') return { name: 'onboarding-learner' }
+    if (store.role === 'leener') return { name: 'onboarding-leener' }
     if (store.role === 'mentor') return { name: 'onboarding-mentor' }
     return { name: 'onboarding-role' }
   }

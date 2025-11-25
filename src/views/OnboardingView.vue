@@ -41,11 +41,11 @@
         <div class="mt-8 flex flex-col gap-4">
           <button
             class="flex items-center justify-center gap-3 rounded-400 px-6 py-4 text-base font-semibold transition"
-            :class="onboardingStore.role === 'learner'
+            :class="onboardingStore.role === 'leener'
               ? 'bg-cta-500 text-surface-button shadow-e-300'
               : 'bg-surface-panel text-primary-600 shadow-e-200 hover:bg-secondary-500'"
-            :aria-pressed="onboardingStore.role === 'learner'"
-            @click="selectRole('learner')"
+            :aria-pressed="onboardingStore.role === 'leener'"
+            @click="selectRole('leener')"
           >
             <IconUser class="h-5 w-5" />
             Je veux apprendre
@@ -95,10 +95,10 @@ import { useOnboardingStore } from '@/stores/onboarding'
 const router = useRouter()
 const onboardingStore = useOnboardingStore()
 const goBack = () => router.back()
-const selectRole = (role: 'learner' | 'mentor') => { onboardingStore.setRole(role) }
+const selectRole = (role: 'leener' | 'mentor') => { onboardingStore.setRole(role) }
 const startFlow = () => {
-  if (onboardingStore.role === 'learner') {
-    router.push({ name: 'onboarding-learner' })
+  if (onboardingStore.role === 'leener') {
+    router.push({ name: 'onboarding-leener' })
   } else if (onboardingStore.role === 'mentor') {
     router.push({ name: 'onboarding-mentor' })
   }
