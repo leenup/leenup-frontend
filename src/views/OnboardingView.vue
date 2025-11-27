@@ -104,6 +104,8 @@ const startFlow = () => {
     router.push({ name: 'onboarding-leener' })
   } else if (selectedRole.value === 'mentor') {
     router.push({ name: 'onboarding-mentor' })
+  } else {
+    router.push({ name: 'auth' })
   }
 }
 

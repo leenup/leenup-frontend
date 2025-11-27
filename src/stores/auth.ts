@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import {
   changePassword as changePasswordRequest,
   createAuthToken,
+  refreshAuthToken,
   deleteAccount as deleteAccountRequest,
   fetchProfile as fetchProfileRequest,
   login as loginRequest,
@@ -19,11 +20,11 @@ export const useAuthStore = defineStore('auth', () => {
   // --- state
   type User = AuthUser
 
-  const storage = typeof window === 'undefined' ? null : window.localStorage
+  const storage = typeof window === 'undefined' ? null : window.sessionStorage
 
   const user = ref<User | null>(null)
-  const accessToken = ref<string | null>(storage?.getItem('accessToken') ?? sessionStorage.getItem('accessToken'))
-  const refreshToken = ref<string | null>(storage?.getItem('refreshToken') ?? sessionStorage.getItem('refreshToken'))
+  const accessToken = ref<string | null>(storage?.getItem('accessToken') ?? null)
+  const refreshToken = ref<string | null>(storage?.getItem('refreshToken') ?? null)
   const loading = ref(false)
 
   // --- getters
@@ -33,10 +34,8 @@ export const useAuthStore = defineStore('auth', () => {
   const persist = (key: string, value: string | null) => {
     if (typeof window === 'undefined') return
     if (value === null) {
-      localStorage.removeItem(key)
       sessionStorage.removeItem(key)
     } else {
-      localStorage.setItem(key, value)
       sessionStorage.setItem(key, value)
     }
   }
@@ -72,6 +71,15 @@ export const useAuthStore = defineStore('auth', () => {
     const tokens = await createAuthToken(payload)
     accessToken.value = tokens.token
     refreshToken.value = tokens.refreshToken ?? null
+    persist('accessToken', accessToken.value)
+    persist('refreshToken', refreshToken.value)
+  }
+
+  async function refreshTokens() {
+    if (!refreshToken.value) throw new Error('Missing refresh token')
+    const tokens = await refreshAuthToken({ refreshToken: refreshToken.value })
+    accessToken.value = tokens.token
+    refreshToken.value = tokens.refreshToken ?? refreshToken.value
     persist('accessToken', accessToken.value)
     persist('refreshToken', refreshToken.value)
   }
@@ -119,6 +127,7 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated,
     login,
     authenticate,
+    refreshTokens,
     logout,
     fetchProfile,
     registerUser,
