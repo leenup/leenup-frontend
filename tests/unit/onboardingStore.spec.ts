@@ -6,7 +6,6 @@ describe('useOnboardingStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.restoreAllMocks()
-    // reset localStorage
     localStorage.clear()
   })
 

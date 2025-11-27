@@ -32,10 +32,10 @@
         <div class="mt-8 flex flex-col gap-4">
           <button
             class="flex items-center justify-center gap-3 rounded-400 px-6 py-4 text-base font-semibold transition"
-            :class="onboardingStore.role === 'leener'
+            :class="selectedRole === 'leener'
               ? 'bg-cta-500 text-surface-button shadow-e-300'
               : 'bg-surface-panel text-primary-600 shadow-e-200 hover:bg-secondary-500'"
-            :aria-pressed="onboardingStore.role === 'leener'"
+            :aria-pressed="selectedRole === 'leener'"
             @click="selectRole('leener')"
           >
             <IconUser class="h-5 w-5" />
@@ -43,10 +43,10 @@
           </button>
           <button
             class="flex items-center justify-center gap-3 rounded-400 px-6 py-4 text-base font-semibold transition"
-            :class="onboardingStore.role === 'mentor'
+            :class="selectedRole === 'mentor'
               ? 'bg-cta-500 text-surface-button shadow-e-300'
               : 'bg-surface-panel text-primary-600 shadow-e-200 hover:bg-secondary-500'"
-            :aria-pressed="onboardingStore.role === 'mentor'"
+            :aria-pressed="selectedRole === 'mentor'"
             @click="selectRole('mentor')"
           >
             <IconUser class="h-5 w-5" />
@@ -65,8 +65,8 @@
       <section class="flex justify-center pb-8">
         <button
           class="w-full max-w-md rounded-400 px-6 py-3 text-surface-button shadow-e-300 transition"
-          :class="onboardingStore.role ? 'bg-cta-600 hover:bg-primary-700' : 'bg-secondary-500 text-primary-600 opacity-60 cursor-not-allowed'"
-          :disabled="!onboardingStore.role"
+          :class="selectedRole ? 'bg-cta-600 hover:bg-primary-700' : 'bg-secondary-500 text-primary-600 opacity-60 cursor-not-allowed'"
+          :disabled="!selectedRole"
           @click="startFlow"
         >
           Commencer
@@ -81,17 +81,28 @@ import OnboardingCarousel from '@/components/onboarding/OnboardingCarousel.vue'
 import IconUser from '@/components/icons/IconHome.vue'
 import IconCoucou from '@/components/icons/IconCoucou.vue'
 import BackButton from '@/components/common/BackButton.vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useOnboardingStore } from '@/stores/onboarding'
 
 const router = useRouter()
 const onboardingStore = useOnboardingStore()
 const goBack = () => router.back()
-const selectRole = (role: 'leener' | 'mentor') => { onboardingStore.setRole(role) }
+const selectedRole = ref<'leener' | 'mentor' | null>(null)
+
+onMounted(() => {
+  onboardingStore.loadFromStorage()
+  selectedRole.value = onboardingStore.role
+})
+
+const selectRole = (role: 'leener' | 'mentor') => {
+  selectedRole.value = role
+  onboardingStore.setRole(role)
+}
 const startFlow = () => {
-  if (onboardingStore.role === 'leener') {
+  if (selectedRole.value === 'leener') {
     router.push({ name: 'onboarding-leener' })
-  } else if (onboardingStore.role === 'mentor') {
+  } else if (selectedRole.value === 'mentor') {
     router.push({ name: 'onboarding-mentor' })
   }
 }

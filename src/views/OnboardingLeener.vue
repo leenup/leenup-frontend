@@ -87,26 +87,34 @@
             </div>
           </div>
 
-          <button
-            type="submit"
-            class="w-full rounded-400 px-6 py-3 text-base font-semibold text-surface-button shadow-e-300 transition"
-            :class="canSubmit ? 'bg-cta-600 hover:bg-primary-700' : 'bg-secondary-500 text-primary-600 opacity-60 cursor-not-allowed'"
-            :disabled="!canSubmit"
-          >
-            Continuer
-          </button>
-        </form>
+        <button
+          type="submit"
+          class="w-full rounded-400 px-6 py-3 text-base font-semibold text-surface-button shadow-e-300 transition"
+          :class="canSubmit && !submitting ? 'bg-cta-600 hover:bg-primary-700' : 'bg-secondary-500 text-primary-600 opacity-60 cursor-not-allowed'"
+          :disabled="!canSubmit || submitting"
+        >
+          {{ submitting ? 'Envoi...' : 'Continuer' }}
+        </button>
+      </form>
       </div>
     </div>
   </main>
 </template>
 
 <script setup lang="ts">
-import { computed, reactive } from 'vue'
+import { computed, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import BackButton from '@/components/common/BackButton.vue'
 import ProgressBar from '@/components/common/ProgressBar.vue'
+import { register } from '@/services/auth.service'
+import { useAuthStore } from '@/stores/auth'
+import { useOnboardingStore } from '@/stores/onboarding'
 
-const progress = 0.33
+const router = useRouter()
+const progress = 0.25
+const authStore = useAuthStore()
+const onboardingStore = useOnboardingStore()
+const submitting = ref(false)
 
 const form = reactive({
   firstName: '',
@@ -122,7 +130,7 @@ const passwordRules = computed(() => {
     { label: '8 caractères minimum', valid: value.length >= 8 },
     { label: '1 majuscule', valid: /[A-Z]/.test(value) },
     { label: '1 minuscule', valid: /[a-z]/.test(value) },
-    { label: '1 chiffre', valid: /[0-9]/.test(value) },
+    { label: '1 chiffre', valid: /\d/.test(value) },
     { label: '1 caractère spécial', valid: /[^A-Za-z0-9]/.test(value) },
   ]
 })
@@ -136,7 +144,32 @@ const canSubmit = computed(() =>
 )
 
 const onSubmit = () => {
-  if (!canSubmit.value) return
-  // TODO: Appeler l’API /register avec la payload finale (role = leener côté front uniquement)
+  if (!canSubmit.value || submitting.value) return
+  submitting.value = true
+  const payload = {
+    email: form.email,
+    plainPassword: form.password,
+    firstName: form.firstName,
+    lastName: form.lastName,
+    avatarUrl: '',
+    bio: '',
+    location: '',
+    timezone: 'Europe/Paris',
+    locale: 'fr',
+    // NOTE: Lorsque le backend exposera les colonnes, envoyer les flags ci-dessous
+    // is_leener: onboardingStore.role === 'leener',
+    // is_mentor: onboardingStore.role === 'mentor',
+  }
+
+  register(payload)
+    .then(async (user) => {
+      const firstnameFromDb = (user as any)?.firstName || form.firstName
+      await authStore.authenticate({ email: form.email, password: form.password })
+      router.push({ name: 'theme', state: { firstName: firstnameFromDb } })
+    })
+    .catch((error) => {
+      console.error('Registration failed', error)
+    })
+    .finally(() => { submitting.value = false })
 }
 </script>

@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import {
   changePassword as changePasswordRequest,
+  createAuthToken,
   deleteAccount as deleteAccountRequest,
   fetchProfile as fetchProfileRequest,
   login as loginRequest,
@@ -21,8 +22,8 @@ export const useAuthStore = defineStore('auth', () => {
   const storage = typeof window === 'undefined' ? null : window.localStorage
 
   const user = ref<User | null>(null)
-  const accessToken = ref<string | null>(storage?.getItem('accessToken') ?? null)
-  const refreshToken = ref<string | null>(storage?.getItem('refreshToken') ?? null)
+  const accessToken = ref<string | null>(storage?.getItem('accessToken') ?? sessionStorage.getItem('accessToken'))
+  const refreshToken = ref<string | null>(storage?.getItem('refreshToken') ?? sessionStorage.getItem('refreshToken'))
   const loading = ref(false)
 
   // --- getters
@@ -30,9 +31,14 @@ export const useAuthStore = defineStore('auth', () => {
 
   // --- actions
   const persist = (key: string, value: string | null) => {
-    if (!storage) return
-    if (value === null) storage.removeItem(key)
-    else storage.setItem(key, value)
+    if (typeof window === 'undefined') return
+    if (value === null) {
+      localStorage.removeItem(key)
+      sessionStorage.removeItem(key)
+    } else {
+      localStorage.setItem(key, value)
+      sessionStorage.setItem(key, value)
+    }
   }
 
   const ensureToken = () => {
@@ -60,6 +66,14 @@ export const useAuthStore = defineStore('auth', () => {
     } finally {
       loading.value = false
     }
+  }
+
+  async function authenticate(payload: CredentialsPayload) {
+    const tokens = await createAuthToken(payload)
+    accessToken.value = tokens.token
+    refreshToken.value = tokens.refreshToken ?? null
+    persist('accessToken', accessToken.value)
+    persist('refreshToken', refreshToken.value)
   }
 
   async function logout() {
@@ -104,6 +118,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading,
     isAuthenticated,
     login,
+    authenticate,
     logout,
     fetchProfile,
     registerUser,

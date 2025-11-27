@@ -21,17 +21,26 @@ export type AuthUser = {
 
 export type CredentialsPayload = { email: string; password: string }
 
+export type AuthTokenResponse = {
+  token: string
+  refreshToken?: string
+}
+
 export type LoginResponse =
   | { token: string; user?: AuthUser }
   | { accessToken: string; refreshToken?: string; user?: AuthUser }
 
 export type RegisterPayload = {
+  email: string
+  plainPassword: string
   firstName: string
   lastName: string
-  email: string
-  password: string
-  phone?: string | null
-  birthDate?: string | null
+  avatarUrl?: string
+  bio?: string
+  location?: string
+  timezone?: string
+  locale?: string
+  // NOTE: Ajouter is_leener / is_mentor (booleens) dès que le backend les expose
 }
 
 export type UpdateProfilePayload = Partial<
@@ -50,8 +59,20 @@ export async function login(payload: CredentialsPayload) {
   return data
 }
 
+export async function createAuthToken(payload: CredentialsPayload) {
+  const { data } = await http.post<AuthTokenResponse>('/auth', payload, {
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+  })
+  return data
+}
+
 export async function register(payload: RegisterPayload) {
-  const { data } = await http.post<AuthUser>(AUTH_REGISTER_PATH, payload)
+  const { data } = await http.post<AuthUser>(AUTH_REGISTER_PATH, payload, {
+    headers: {
+      'Content-Type': 'application/ld+json',
+      Accept: 'application/ld+json',
+    },
+  })
   return data
 }
 
