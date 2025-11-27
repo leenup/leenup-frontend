@@ -82,7 +82,7 @@
               required
             />
             <div class="text-sm text-primary-600">
-              <!-- TODO: Remplacer les # par les liens CGU/Politique/CGV réels -->
+              <!-- NOTE: Remplacer les # par les liens CGU/Politique/CGV réels -->
               J’accepte les <a href="#" class="underline">CGU</a>, la <a href="#" class="underline">politique de confidentialité</a> et les <a href="#" class="underline">CGV</a>.
             </div>
           </div>

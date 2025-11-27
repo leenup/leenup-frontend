@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 // import { useOnboardingStore } from '@/stores/onboarding'
+import { useAuthStore } from '@/stores/auth'
 
 const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: () => import('@/views/HomeView.vue') },
@@ -10,6 +11,13 @@ const routes: RouteRecordRaw[] = [
     path: '/discover',
     name: 'onboarding',
     component: () => import('@/views/OnboardingView.vue'),
+    meta: { guestOnly: true },
+  },
+
+  {
+    path: '/auth',
+    name: 'auth',
+    component: () => import('@/views/AuthView.vue'),
     meta: { guestOnly: true },
   },
 
@@ -39,26 +47,30 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
+    path: '/auth/dashboard',
+    name: 'dashboard',
+    component: () => import('@/views/DashboardView.vue'),
+    meta: { requiresAuth: true },
+  },
+
+  {
     path: '/theme',
     name: 'theme',
     component: () => import('@/views/ThemeChoice.vue'),
     meta: { guestOnly: true },
   },
-
-  // Discover Application - Mentorats Presentation
 ]
 
 const router = createRouter({ history: createWebHistory(), routes })
 
-// TODO: réactiver la redirection par rôle quand le backend gérera is_leener / is_mentor
-// router.beforeEach((to) => {
-//   if (to.name === 'onboarding-start') {
-//     const store = useOnboardingStore()
-//     if (store.role === 'leener') return { name: 'onboarding-leener' }
-//     if (store.role === 'mentor') return { name: 'onboarding-mentor' }
-//     return { name: 'onboarding-role' }
-//   }
-//   return true
-// })
+router.beforeEach((to) => {
+  if (to.meta.requiresAuth || to.path.startsWith('/auth/')) {
+    const store = useAuthStore()
+    if (!store.isAuthenticated) {
+      return { name: 'auth' }
+    }
+  }
+  return true
+})
 
 export default router

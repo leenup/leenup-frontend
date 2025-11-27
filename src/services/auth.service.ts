@@ -26,6 +26,8 @@ export type AuthTokenResponse = {
   refreshToken?: string
 }
 
+export type RefreshTokenPayload = { refreshToken: string }
+
 export type LoginResponse =
   | { token: string; user?: AuthUser }
   | { accessToken: string; refreshToken?: string; user?: AuthUser }
@@ -61,6 +63,13 @@ export async function login(payload: CredentialsPayload) {
 
 export async function createAuthToken(payload: CredentialsPayload) {
   const { data } = await http.post<AuthTokenResponse>('/auth', payload, {
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+  })
+  return data
+}
+
+export async function refreshAuthToken(payload: RefreshTokenPayload) {
+  const { data } = await http.post<AuthTokenResponse>('/api/token/refresh', payload, {
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
   })
   return data
