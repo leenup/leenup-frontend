@@ -4,15 +4,6 @@ import { useAuthStore } from '@/stores/auth'
 
 const http = axios.create({ baseURL: API_BASE_URL, timeout: 15000, withCredentials: true })
 
-http.interceptors.request.use((config) => {
-  const store = useAuthStore()
-  if (store.accessToken) {
-    config.headers = config.headers ?? {}
-    config.headers.Authorization = `Bearer ${store.accessToken}`
-  }
-  return config
-})
-
 let isRefreshing = false
 let pendingRequests: Array<() => void> = []
 
@@ -42,8 +33,6 @@ http.interceptors.response.use(
       }
 
       originalRequest.__isRetryRequest = true
-      originalRequest.headers = originalRequest.headers ?? {}
-      originalRequest.headers.Authorization = `Bearer ${store.accessToken}`
       return http(originalRequest)
     }
 

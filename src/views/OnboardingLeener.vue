@@ -9,13 +9,13 @@
       <div class="w-full max-w-3xl rounded-400 bg-surface-panel px-8 py-10 shadow-e-200">
         <div class="mb-8 text-center">
           <h1 class="text-3xl font-bold mb-2">Bienvenue apprenant !</h1>
-          <p class="text-primary-600">Crée ton profil pour rejoindre la communauté Leenup.</p>
+          <p class="text-primary-600">Cree ton profil pour rejoindre la communaute Leenup.</p>
         </div>
 
         <form class="space-y-6" @submit.prevent="onSubmit">
           <div class="grid gap-4 md:grid-cols-2">
             <label class="text-left text-sm font-semibold text-primary-600">
-              Prénom
+              Prenom
               <input
                 v-model="form.firstName"
                 type="text"
@@ -66,7 +66,7 @@
                   class="flex h-5 w-5 items-center justify-center rounded-full transition-all duration-200"
                   :class="rule.valid ? 'bg-cta-500 text-surface-button' : 'bg-secondary-500 text-primary-600'"
                 >
-                  {{ rule.valid ? '✓' : '•' }}
+                  {{ rule.valid ? '✓' : '✗' }}
                 </span>
                 <span>{{ rule.label }}</span>
               </li>
@@ -82,94 +82,40 @@
               required
             />
             <div class="text-sm text-primary-600">
-              <!-- NOTE: Remplacer les # par les liens CGU/Politique/CGV réels -->
-              J’accepte les <a href="#" class="underline">CGU</a>, la <a href="#" class="underline">politique de confidentialité</a> et les <a href="#" class="underline">CGV</a>.
+              J'accepte les <a href="#" class="underline">CGU</a>, la <a href="#" class="underline">politique de confidentialite</a> et les <a href="#" class="underline">CGV</a>.
             </div>
           </div>
 
-        <button
-          type="submit"
-          class="w-full rounded-400 px-6 py-3 text-base font-semibold text-surface-button shadow-e-300 transition"
-          :class="canSubmit && !submitting ? 'bg-cta-600 hover:bg-primary-700' : 'bg-secondary-500 text-primary-600 opacity-60 cursor-not-allowed'"
-          :disabled="!canSubmit || submitting"
-        >
-          {{ submitting ? 'Envoi...' : 'Continuer' }}
-        </button>
-      </form>
+          <button
+            type="submit"
+            class="w-full rounded-400 px-6 py-3 text-base font-semibold text-surface-button shadow-e-300 transition"
+            :class="canSubmit && !submitting ? 'bg-cta-600 hover:bg-primary-700' : 'bg-secondary-500 text-primary-600 opacity-60 cursor-not-allowed'"
+            :disabled="!canSubmit || submitting"
+          >
+            {{ submitting ? 'Envoi...' : 'Continuer' }}
+          </button>
+        </form>
       </div>
     </div>
+    <Toast v-if="errorMessage" :key="'err-' + errorMessage" :message="errorMessage" type="error" />
+    <Toast v-if="successMessage" :key="'ok-' + successMessage" :message="successMessage" type="success" />
   </main>
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import BackButton from '@/components/common/BackButton.vue'
 import ProgressBar from '@/components/common/ProgressBar.vue'
-import { register } from '@/services/auth.service'
-import { useAuthStore } from '@/stores/auth'
-import { useOnboardingStore } from '@/stores/onboarding'
+import Toast from '@/components/common/Toast.vue'
+import { useOnboardingRegistration } from '@/composables/useOnboardingRegistration'
 
 const router = useRouter()
 const progress = 0.25
-const authStore = useAuthStore()
-const onboardingStore = useOnboardingStore()
-const submitting = ref(false)
 
-const form = reactive({
-  firstName: '',
-  lastName: '',
-  email: '',
-  password: '',
-  acceptTerms: false,
-})
-
-const passwordRules = computed(() => {
-  const value = form.password
-  return [
-    { label: '8 caractères minimum', valid: value.length >= 8 },
-    { label: '1 majuscule', valid: /[A-Z]/.test(value) },
-    { label: '1 minuscule', valid: /[a-z]/.test(value) },
-    { label: '1 chiffre', valid: /\d/.test(value) },
-    { label: '1 caractère spécial', valid: /[^A-Za-z0-9]/.test(value) },
-  ]
-})
-
-const canSubmit = computed(() =>
-  form.firstName.trim().length > 0 &&
-  form.lastName.trim().length > 0 &&
-  form.email.trim().length > 0 &&
-  form.acceptTerms &&
-  passwordRules.value.every((r) => r.valid)
-)
-
-const onSubmit = () => {
-  if (!canSubmit.value || submitting.value) return
-  submitting.value = true
-  const payload = {
-    email: form.email,
-    plainPassword: form.password,
-    firstName: form.firstName,
-    lastName: form.lastName,
-    avatarUrl: '',
-    bio: '',
-    location: '',
-    timezone: 'Europe/Paris',
-    locale: 'fr',
-    // NOTE: Lorsque le backend exposera les colonnes, envoyer les flags ci-dessous
-    // is_leener: onboardingStore.role === 'leener',
-    // is_mentor: onboardingStore.role === 'mentor',
-  }
-
-  register(payload)
-    .then(async (user) => {
-      const firstnameFromDb = (user as any)?.firstName || form.firstName
-      await authStore.authenticate({ email: form.email, password: form.password })
-      router.push({ name: 'theme', state: { firstName: firstnameFromDb } })
-    })
-    .catch((error) => {
-      console.error('Registration failed', error)
-    })
-    .finally(() => { submitting.value = false })
-}
+const { form, passwordRules, canSubmit, submitting, successMessage, errorMessage, onSubmit } =
+  useOnboardingRegistration({
+    afterSuccess: (firstName) => {
+      router.push({ name: 'theme', state: { firstName } })
+    },
+  })
 </script>

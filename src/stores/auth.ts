@@ -21,104 +21,103 @@ export const useAuthStore = defineStore('auth', () => {
   type User = AuthUser
 
   const user = ref<User | null>(null)
-  const accessToken = ref<string | null>(null)
-  const refreshToken = ref<string | null>(null)
   const loading = ref(false)
+  const sessionChecked = ref(false)
 
   // --- getters
-  const isAuthenticated = computed(() => !!accessToken.value)
+  const isAuthenticated = computed(() => !!user.value)
 
   // --- actions
-  const persist = (key: string, value: string | null) => {
-    // Tokens are kept in memory only (no storage) to reduce XSS surface
+  const markSignedOut = () => {
+    user.value = null
+    sessionChecked.value = true
   }
 
-  const ensureToken = () => {
-    if (!accessToken.value) throw new Error('Missing access token')
-    return accessToken.value
+  const handleAuthSuccess = async (data: { user?: AuthUser } | undefined) => {
+    if (data?.user) {
+      user.value = data.user
+      sessionChecked.value = true
+      return data.user
+    }
+    return fetchProfile()
   }
 
   async function login(payload: CredentialsPayload) {
     try {
       loading.value = true
       const data = await loginRequest(payload)
-
-      const normalizedAccessToken =
-        'accessToken' in data ? data.accessToken : data.token
-      accessToken.value = normalizedAccessToken ?? null
-
-      const normalizedRefreshToken =
-        'refreshToken' in data ? data.refreshToken ?? null : null
-      refreshToken.value = normalizedRefreshToken
-
-      user.value = data.user ?? null
-
-      persist('accessToken', accessToken.value)
-      persist('refreshToken', refreshToken.value)
+      return await handleAuthSuccess(data)
     } finally {
       loading.value = false
     }
   }
 
   async function authenticate(payload: CredentialsPayload) {
-    const tokens = await createAuthToken(payload)
-    accessToken.value = tokens.token
-    refreshToken.value = tokens.refreshToken ?? null
-    persist('accessToken', accessToken.value)
-    persist('refreshToken', refreshToken.value)
+    try {
+      loading.value = true
+      const data = await createAuthToken(payload)
+      return await handleAuthSuccess(data)
+    } finally {
+      loading.value = false
+    }
   }
 
   async function refreshTokens() {
-    if (!refreshToken.value) throw new Error('Missing refresh token')
-    const tokens = await refreshAuthToken({ refreshToken: refreshToken.value })
-    accessToken.value = tokens.token
-    refreshToken.value = tokens.refreshToken ?? refreshToken.value
-    persist('accessToken', accessToken.value)
-    persist('refreshToken', refreshToken.value)
+    await refreshAuthToken()
   }
 
   async function logout() {
-    accessToken.value = null
-    refreshToken.value = null
-    user.value = null
+    markSignedOut()
   }
 
   async function fetchProfile() {
-    if (!accessToken.value) return
-    const profile = await fetchProfileRequest(accessToken.value)
-    user.value = profile
+    try {
+      const profile = await fetchProfileRequest()
+      user.value = profile
+      sessionChecked.value = true
+      return profile
+    } catch (error) {
+      markSignedOut()
+      throw error
+    }
   }
 
   const registerUser = (payload: RegisterPayload) => registerRequest(payload)
 
   async function updateProfile(payload: UpdateProfilePayload) {
-    const token = ensureToken()
-    const updated = await updateProfileRequest(token, payload)
+    const updated = await updateProfileRequest(payload)
     user.value = updated
     return updated
   }
 
   async function deleteAccount() {
-    const token = ensureToken()
-    await deleteAccountRequest(token)
-    logout()
+    await deleteAccountRequest()
+    markSignedOut()
   }
 
   async function changePassword(payload: ChangePasswordPayload) {
-    const token = ensureToken()
-    await changePasswordRequest(token, payload)
+    await changePasswordRequest(payload)
+  }
+
+  async function ensureSession() {
+    if (sessionChecked.value) return
+    try {
+      await fetchProfile()
+    } catch {
+      // noop: fetchProfile already normalizes state/sessionChecked
+    }
   }
   return {
     user,
-    accessToken,
-    refreshToken,
     loading,
+    sessionChecked,
     isAuthenticated,
     login,
     authenticate,
     refreshTokens,
     logout,
     fetchProfile,
+    ensureSession,
     registerUser,
     updateProfile,
     deleteAccount,

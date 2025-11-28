@@ -3,10 +3,19 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
 
 const mocks = vi.hoisted(() => ({
-  createAuthToken: vi.fn().mockResolvedValue({ token: 'token-123', refreshToken: 'refresh-456' }),
-  refreshAuthToken: vi.fn().mockResolvedValue({ token: 'token-789', refreshToken: 'refresh-000' }),
+  createAuthToken: vi.fn().mockResolvedValue({}),
+  refreshAuthToken: vi.fn().mockResolvedValue({}),
+  fetchProfile: vi.fn().mockResolvedValue({
+    id: 1,
+    email: 'a@b.com',
+    firstName: 'John',
+    lastName: 'Doe',
+  }),
   login: vi.fn(),
   register: vi.fn(),
+  deleteAccount: vi.fn(),
+  updateProfile: vi.fn(),
+  changePassword: vi.fn(),
 }))
 
 vi.mock('@/services/auth.service', () => mocks)
@@ -14,56 +23,47 @@ vi.mock('@/services/auth.service', () => mocks)
 describe('useAuthStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
-    localStorage.clear()
-    sessionStorage.clear()
     vi.useFakeTimers()
     vi.clearAllMocks()
   })
 
-  it('authenticate stocke token et refreshToken en mémoire uniquement', async () => {
+  it('authenticate s\'appuie sur les cookies HttpOnly et récupère le profil', async () => {
     const store = useAuthStore()
 
     await store.authenticate({ email: 'a@b.com', password: 'pass' })
 
-    expect(store.accessToken).toBe('token-123')
-    expect(store.refreshToken).toBe('refresh-456')
-    expect(sessionStorage.getItem('refreshToken')).toBeNull()
-    expect(sessionStorage.getItem('accessToken')).toBeNull()
     expect(mocks.createAuthToken).toHaveBeenCalledWith({ email: 'a@b.com', password: 'pass' })
+    expect(mocks.fetchProfile).toHaveBeenCalledTimes(1)
+    expect(store.user?.email).toBe('a@b.com')
+    expect(store.sessionChecked).toBe(true)
   })
 
-  it('refreshTokens remplace les tokens et met à jour le storage', async () => {
+  it('refreshTokens appelle le backend sans dépendre d\'un refresh token lisible côté client', async () => {
     const store = useAuthStore()
-    store.accessToken = 'old-token'
-    store.refreshToken = 'refresh-456'
+
     await store.refreshTokens()
 
-    expect(store.accessToken).toBe('token-789')
-    expect(store.refreshToken).toBe('refresh-000')
-    expect(sessionStorage.getItem('refreshToken')).toBeNull()
-    expect(sessionStorage.getItem('accessToken')).toBeNull()
-    expect(mocks.refreshAuthToken).toHaveBeenCalledWith({ refreshToken: 'refresh-456' })
+    expect(mocks.refreshAuthToken).toHaveBeenCalledTimes(1)
   })
 
-  it('logout nettoie le state', () => {
+  it('logout nettoie le state et marque la session vérifiée', () => {
     const store = useAuthStore()
-    store.accessToken = 'token-123'
-    store.refreshToken = 'refresh-456'
     store.user = { id: 1, email: 'a@b.com', firstName: 'John', lastName: 'Doe' }
+    store.sessionChecked = false
 
     store.logout()
 
-    expect(store.accessToken).toBeNull()
-    expect(store.refreshToken).toBeNull()
     expect(store.user).toBeNull()
+    expect(store.sessionChecked).toBe(true)
   })
 
-  it('authenticate propage les erreurs sans altérer le state', async () => {
+  it('ensureSession évite les appels redondants à fetchProfile', async () => {
     const store = useAuthStore()
-    mocks.createAuthToken.mockRejectedValueOnce(new Error('Bad credentials'))
 
-    await expect(store.authenticate({ email: 'a@b.com', password: 'wrong' })).rejects.toThrow('Bad credentials')
-    expect(store.accessToken).toBeNull()
-    expect(store.refreshToken).toBeNull()
+    await store.ensureSession()
+    await store.ensureSession()
+
+    expect(mocks.fetchProfile).toHaveBeenCalledTimes(1)
+    expect(store.sessionChecked).toBe(true)
   })
 })
