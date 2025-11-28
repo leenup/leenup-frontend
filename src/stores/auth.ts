@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import {
   changePassword as changePasswordRequest,
+  createAuthToken,
+  refreshAuthToken,
   deleteAccount as deleteAccountRequest,
   fetchProfile as fetchProfileRequest,
   login as loginRequest,
@@ -18,11 +20,9 @@ export const useAuthStore = defineStore('auth', () => {
   // --- state
   type User = AuthUser
 
-  const storage = typeof window === 'undefined' ? null : window.localStorage
-
   const user = ref<User | null>(null)
-  const accessToken = ref<string | null>(storage?.getItem('accessToken') ?? null)
-  const refreshToken = ref<string | null>(storage?.getItem('refreshToken') ?? null)
+  const accessToken = ref<string | null>(null)
+  const refreshToken = ref<string | null>(null)
   const loading = ref(false)
 
   // --- getters
@@ -30,9 +30,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   // --- actions
   const persist = (key: string, value: string | null) => {
-    if (!storage) return
-    if (value === null) storage.removeItem(key)
-    else storage.setItem(key, value)
+    // Tokens are kept in memory only (no storage) to reduce XSS surface
   }
 
   const ensureToken = () => {
@@ -62,12 +60,27 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function authenticate(payload: CredentialsPayload) {
+    const tokens = await createAuthToken(payload)
+    accessToken.value = tokens.token
+    refreshToken.value = tokens.refreshToken ?? null
+    persist('accessToken', accessToken.value)
+    persist('refreshToken', refreshToken.value)
+  }
+
+  async function refreshTokens() {
+    if (!refreshToken.value) throw new Error('Missing refresh token')
+    const tokens = await refreshAuthToken({ refreshToken: refreshToken.value })
+    accessToken.value = tokens.token
+    refreshToken.value = tokens.refreshToken ?? refreshToken.value
+    persist('accessToken', accessToken.value)
+    persist('refreshToken', refreshToken.value)
+  }
+
   async function logout() {
     accessToken.value = null
     refreshToken.value = null
     user.value = null
-    persist('accessToken', null)
-    persist('refreshToken', null)
   }
 
   async function fetchProfile() {
@@ -76,9 +89,7 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = profile
   }
 
-  async function registerUser(payload: RegisterPayload) {
-    return registerRequest(payload)
-  }
+  const registerUser = (payload: RegisterPayload) => registerRequest(payload)
 
   async function updateProfile(payload: UpdateProfilePayload) {
     const token = ensureToken()
@@ -104,6 +115,8 @@ export const useAuthStore = defineStore('auth', () => {
     loading,
     isAuthenticated,
     login,
+    authenticate,
+    refreshTokens,
     logout,
     fetchProfile,
     registerUser,

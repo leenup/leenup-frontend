@@ -1,61 +1,138 @@
 <template>
-  <div class="min-h-[100dvh] bg-surface-bg text-surface-fg flex flex-col">
-    <a class="w-10 h-10" href="/">
-      <IconHome class="w-20 h-20 text-primary-500 m-5" />
-    </a>
-    <header class="container max-w-5xl w-full px-4 md:px-6 py-4 flex flex-col items-center gap-4">
-      <div class="flex items-center justify-center gap-6 w-1/2">
-        <span class="font-sans typography-small">Développe ton perso</span>
-        <IconTech class="w-20 h-20 text-primary-500"/>
-        <span class="font-sans typography-small hidden sm:inline">Gagne des avantages</span>
-      </div>
-      <StepProgressBar :index="index" :total="slides.length" class="w-full" :step="index" />
-    </header>
-    
+  <main class="min-h-screen bg-surface-bg text-primary-600">
+    <div class="mx-auto flex max-w-3xl flex-col gap-8 px-6 py-8">
+      <header class="flex items-center justify-start">
+        <BackButton />
+      </header>
 
-    <main class="container max-w-5xl w-full px-4 md:px-6 flex-1 flex items-stretch h-full">
-      <div class="w-full flex-1">
-        <div class="h-[calc(100dvh-160px)] md:h-[calc(100dvh-200px)]">
-          <OnboardingCarousel :slides="slides"
-            @change="(i:number)=> index = i"
-            @finish="goToPresentation" />
+      <section class="grid items-center gap-6 md:grid-cols-[auto,1fr]">
+        <IconCoucou class="h-20 w-20 text-support-orange" />
+        <div class="rounded-400 bg-surface-panel px-4 py-3 text-left text-primary-600 shadow-e-100">
+          Bienvenue ! Moi c'est "...", je t'accompagne pas à pas pour créer ton profil leener.
         </div>
-      </div>
-    </main>
-  </div>
+      </section>
+
+      <section class="flex flex-col items-center gap-4">
+        <h1 class="text-center font-sans h1 font-bold leading-tight">Ta progression commence ici !</h1>
+        <div class="w-full max-w-3xl">
+          <OnboardingCarousel :slides="slides" />
+        </div>
+      </section>
+
+      <section class="grid gap-6 md:grid-cols-[1fr,auto] md:items-center">
+        <div class="font-sans font-bold rounded-400 bg-surface-panel px-4 py-3 shadow-e-100">
+          <p>
+            Ici tu peux, <span class="font-sans font-extrabold">être mentor ET apprenant</span>
+          </p>
+        </div>
+        <IconCoucou class="h-20 w-20 text-support-orange -scale-x-100" />
+      </section>
+
+      <section class="rounded-400 bg-primary-600 px-6 py-10 text-center text-surface-button shadow-e-300">
+        <h3 class="text-2xl font-bold">Je deviens leener !</h3>
+        <p class="mt-2 text-base text-surface-button/80">
+          Choisis si tu veux d'abord <span class="font-sans font-extrabold">apprendre</span> ou <span class="font-sans font-extrabold">transmettre</span> (tu pourras toujours ajouter l'autre rôle plus tard)
+        </p>
+        <div class="mt-8 flex flex-col gap-4">
+          <button
+            class="flex items-center justify-center gap-3 rounded-400 px-6 py-4 text-base font-semibold transition"
+            :class="selectedRole === 'leener'
+              ? 'bg-cta-500 text-surface-button shadow-e-300'
+              : 'bg-surface-panel text-primary-600 shadow-e-200 hover:bg-secondary-500'"
+            :aria-pressed="selectedRole === 'leener'"
+            @click="selectRole('leener')"
+          >
+            <IconUser class="h-5 w-5" />
+            Je veux apprendre
+          </button>
+          <button
+            class="flex items-center justify-center gap-3 rounded-400 px-6 py-4 text-base font-semibold transition"
+            :class="selectedRole === 'mentor'
+              ? 'bg-cta-500 text-surface-button shadow-e-300'
+              : 'bg-surface-panel text-primary-600 shadow-e-200 hover:bg-secondary-500'"
+            :aria-pressed="selectedRole === 'mentor'"
+            @click="selectRole('mentor')"
+          >
+            <IconUser class="h-5 w-5" />
+            Je veux transmettre
+          </button>
+        </div>
+      </section>
+
+      <section class="grid gap-6 md:grid-cols-[auto,1fr] md:items-center">
+        <IconCoucou class="h-20 w-20 text-support-orange" />
+        <div class="rounded-400 bg-surface-panel px-4 py-3 text-primary-600 shadow-e-100">
+          Savais-tu que 90% des leeners... etc
+        </div>
+      </section>
+
+      <section class="flex justify-center pb-8">
+        <button
+          class="w-full max-w-md rounded-400 px-6 py-3 text-surface-button shadow-e-300 transition"
+          :class="selectedRole ? 'bg-cta-600 hover:bg-primary-700' : 'bg-secondary-500 text-primary-600 opacity-60 cursor-not-allowed'"
+          :disabled="!selectedRole"
+          @click="startFlow"
+        >
+          Je commence
+        </button>
+      </section>
+    </div>
+  </main>
 </template>
 
 <script setup lang="ts">
 import OnboardingCarousel from '@/components/onboarding/OnboardingCarousel.vue'
-import StepProgressBar from '@/components/onboarding/StepProgressBar.vue'
-import IconTech from '@/components/icons/IconTech.vue'
-import IconHome from '@/components/icons/IconHome.vue'
-
-import { ref } from 'vue'
+import IconUser from '@/components/icons/IconHome.vue'
+import IconCoucou from '@/components/icons/IconCoucou.vue'
+import BackButton from '@/components/common/BackButton.vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useOnboardingStore } from '@/stores/onboarding'
 
 const router = useRouter()
-const index = ref(0)
+const onboardingStore = useOnboardingStore()
+const goBack = () => router.back()
+const selectedRole = ref<'leener' | 'mentor' | null>(null)
+
+onMounted(() => {
+  onboardingStore.loadFromStorage()
+  selectedRole.value = onboardingStore.role
+})
+
+const selectRole = (role: 'leener' | 'mentor') => {
+  selectedRole.value = role
+  onboardingStore.setRole(role)
+}
+const startFlow = () => {
+  if (selectedRole.value === 'leener') {
+    router.push({ name: 'onboarding-leener' })
+  } else if (selectedRole.value === 'mentor') {
+    router.push({ name: 'onboarding-mentor' })
+  } else {
+    router.push({ name: 'auth' })
+  }
+}
 
 const slides = [
   {
-    title: 'Parcours gamifié',
-    description: 'Système de niveaux et progression, défis, monnaie virtuelle et classement de réputation !',
+    title: 'Simple & Rapide',
+    description: 'Que tu sois mentor ou apprenant, créé ton profil leener en moins de 5 minutes !',
     image: new URL('@/assets/onboarding/slide-1.png', import.meta.url).toString(),
   },
   {
-    title: 'Apprentissage gratuit',
-    description: 'Profite de 7 jours gratuits pour découvrir nos leeneurs !',
+    title: 'Découvre & progresse',
+    description: 'Développes de nouvelles compétences et suis ta progression pas à pas !',
     image: new URL('@/assets/onboarding/slide-2.png', import.meta.url).toString(),
   },
   {
-    title: 'Recevoir & donner',
-    description: 'Développer de nouvelles compétences : c’est à la portée de tout le monde !',
+    title: 'Reçois & partages',
+    description: 'Tu peux être à la fois un leener mentor et un leener apprenant, les 2 sont possible !',
     image: new URL('@/assets/onboarding/slide-3.png', import.meta.url).toString(),
   },
+  {
+    title: 'Et amuse toi !',
+    description: "Pendant toute ta progression, gagne des cartes et débloques des crédits !",
+    image: undefined,
+  }
 ]
-
-const goToPresentation = () => {
-  router.push({ name: 'presentation-mentorats' })
-}
 </script>

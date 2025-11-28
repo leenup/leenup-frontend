@@ -68,7 +68,7 @@ describe('useAuthStore', () => {
       firstName: 'John',
       lastName: 'Doe',
       email: 'john@example.com',
-      password: 'secret',
+      plainPassword: 'secret',
     }
 
     const result = await store.registerUser(payload)
