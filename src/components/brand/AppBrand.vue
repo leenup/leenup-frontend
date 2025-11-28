@@ -8,7 +8,7 @@
       <img
         src="@/assets/brand/logo/LogoSlogan.svg"
         alt="Leenup"
-        class="h-14 md:h-20"
+        class="h-20 md:h-32"
       />
     </a>
   </div>
