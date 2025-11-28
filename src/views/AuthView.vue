@@ -24,7 +24,7 @@
             v-model="email"
             type="email"
             required
-            placeholder="Monadresse@mail.com"
+            placeholder="monadresse@mail.com"
             class="w-full rounded-300 border border-secondary-300 bg-white px-4 py-3 text-primary-600 shadow-e-100 focus:border-cta-500 focus:outline-none focus:ring-2 focus:ring-cta-200"
           />
           <input
@@ -53,6 +53,8 @@
         </button>
       </form>
     </div>
+    <Toast v-if="errorMessage" :key="'err-' + errorMessage" :message="errorMessage" type="error" />
+    <Toast v-if="successMessage" :key="'ok-' + successMessage" :message="successMessage" type="success" />
   </main>
 </template>
 
@@ -64,14 +66,44 @@ import ProgressBar from '@/components/common/ProgressBar.vue'
 import IconCoucou from '@/components/icons/IconCoucou.vue'
 import IconUser from '@/components/icons/IconHome.vue'
 import { useAuthStore } from '@/stores/auth'
+import Toast from '@/components/common/Toast.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const email = ref('')
 const password = ref('')
+const errorMessage = ref('')
+const successMessage = ref('')
+let redirectTimer: ReturnType<typeof setTimeout> | undefined
+
+const translateError = (msg?: string) => {
+  if (!msg) return 'Une erreur est survenue. Merci de réessayer.'
+  const normalized = msg.toLowerCase()
+  if (normalized.includes('network')) return 'Connexion serveur impossible. Vérifie ta connexion ou réessaie plus tard.'
+  if (normalized.includes('expired') || normalized.includes('jwt')) return 'Votre session a expiré, merci de vous reconnecter.'
+  if (normalized.includes('invalid') || normalized.includes('bad credentials')) return 'Identifiants incorrects. Vérifiez votre email et votre mot de passe.'
+  if (normalized.includes('unauthorized')) return 'Vous n’êtes pas autorisé. Merci de vous reconnecter.'
+  return msg
+}
 
 const onSubmit = async () => {
-  await authStore.authenticate({ email: email.value, password: password.value })
-  router.push({ name: 'dashboard' })
+  errorMessage.value = ''
+  successMessage.value = ''
+  if (redirectTimer) {
+    globalThis.clearTimeout(redirectTimer)
+    redirectTimer = undefined
+  }
+  try {
+    await authStore.authenticate({ email: email.value, password: password.value })
+    await authStore.fetchProfile()
+    successMessage.value = 'Connexion réussie'
+    redirectTimer = globalThis.setTimeout(() => {
+      // NOTE: router vers dashboard mentor si is_mentor true
+      router.push({ name: 'dashboard-leener' })
+    }, 5000)
+  } catch (err: any) {
+    const apiMessage = err?.response?.data?.message || err?.response?.data?.error || err?.message
+    errorMessage.value = translateError(apiMessage)
+  }
 }
 </script>

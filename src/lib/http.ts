@@ -2,7 +2,7 @@ import axios from 'axios'
 import { API_BASE_URL } from './env'
 import { useAuthStore } from '@/stores/auth'
 
-const http = axios.create({ baseURL: API_BASE_URL, timeout: 15000 })
+const http = axios.create({ baseURL: API_BASE_URL, timeout: 15000, withCredentials: true })
 
 http.interceptors.request.use((config) => {
   const store = useAuthStore()
@@ -22,7 +22,7 @@ http.interceptors.response.use(
     const originalRequest = error.config
     const store = useAuthStore()
 
-    if (error.response?.status === 401 && store.refreshToken && !originalRequest.__isRetryRequest) {
+    if (error.response?.status === 401 && !originalRequest.__isRetryRequest) {
       if (isRefreshing) {
         await new Promise<void>((resolve) => pendingRequests.push(resolve))
       } else {

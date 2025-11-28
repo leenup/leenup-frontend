@@ -20,11 +20,9 @@ export const useAuthStore = defineStore('auth', () => {
   // --- state
   type User = AuthUser
 
-  const storage = typeof window === 'undefined' ? null : window.sessionStorage
-
   const user = ref<User | null>(null)
-  const accessToken = ref<string | null>(storage?.getItem('accessToken') ?? null)
-  const refreshToken = ref<string | null>(storage?.getItem('refreshToken') ?? null)
+  const accessToken = ref<string | null>(null)
+  const refreshToken = ref<string | null>(null)
   const loading = ref(false)
 
   // --- getters
@@ -32,12 +30,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   // --- actions
   const persist = (key: string, value: string | null) => {
-    if (typeof window === 'undefined') return
-    if (value === null) {
-      sessionStorage.removeItem(key)
-    } else {
-      sessionStorage.setItem(key, value)
-    }
+    // Tokens are kept in memory only (no storage) to reduce XSS surface
   }
 
   const ensureToken = () => {
@@ -88,8 +81,6 @@ export const useAuthStore = defineStore('auth', () => {
     accessToken.value = null
     refreshToken.value = null
     user.value = null
-    persist('accessToken', null)
-    persist('refreshToken', null)
   }
 
   async function fetchProfile() {
@@ -98,9 +89,7 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = profile
   }
 
-  async function registerUser(payload: RegisterPayload) {
-    return registerRequest(payload)
-  }
+  const registerUser = (payload: RegisterPayload) => registerRequest(payload)
 
   async function updateProfile(payload: UpdateProfilePayload) {
     const token = ensureToken()

@@ -52,6 +52,12 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/DashboardView.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/auth/dashboard-leener',
+    name: 'dashboard-leener',
+    component: () => import('@/views/DashboardView.vue'),
+    meta: { requiresAuth: true },
+  },
 
   {
     path: '/theme',

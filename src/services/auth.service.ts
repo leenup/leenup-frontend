@@ -57,13 +57,14 @@ export type ChangePasswordPayload = {
 const authHeaders = (token: string) => ({ Authorization: `Bearer ${token}` })
 
 export async function login(payload: CredentialsPayload) {
-  const { data } = await http.post<LoginResponse>(AUTH_LOGIN_PATH, payload)
+  const { data } = await http.post<LoginResponse>(AUTH_LOGIN_PATH, payload, { withCredentials: true })
   return data
 }
 
 export async function createAuthToken(payload: CredentialsPayload) {
   const { data } = await http.post<AuthTokenResponse>('/auth', payload, {
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    withCredentials: true,
   })
   return data
 }
@@ -71,6 +72,7 @@ export async function createAuthToken(payload: CredentialsPayload) {
 export async function refreshAuthToken(payload: RefreshTokenPayload) {
   const { data } = await http.post<AuthTokenResponse>('/api/token/refresh', payload, {
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    withCredentials: true,
   })
   return data
 }
