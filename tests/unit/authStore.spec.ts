@@ -49,7 +49,6 @@ describe('useAuthStore', () => {
     const store = useAuthStore()
     store.accessToken = 'token-123'
     store.refreshToken = 'refresh-456'
-    // @ts-expect-error test
     store.user = { id: 1, email: 'a@b.com', firstName: 'John', lastName: 'Doe' }
 
     store.logout()
