@@ -66,7 +66,7 @@ describe('auth.service', () => {
       firstName: 'John',
       lastName: 'Doe',
       email: 'john@example.com',
-      password: 'secret',
+      plainPassword: 'secret',
     }
     const user = { id: 1, email: payload.email, firstName: 'John', lastName: 'Doe' }
     httpSpies.post.mockResolvedValueOnce({ data: user })

@@ -21,17 +21,28 @@ export type AuthUser = {
 
 export type CredentialsPayload = { email: string; password: string }
 
+export type AuthTokenResponse = {
+  token: string
+  refreshToken?: string
+}
+
+export type RefreshTokenPayload = { refreshToken: string }
+
 export type LoginResponse =
   | { token: string; user?: AuthUser }
   | { accessToken: string; refreshToken?: string; user?: AuthUser }
 
 export type RegisterPayload = {
+  email: string
+  plainPassword: string
   firstName: string
   lastName: string
-  email: string
-  password: string
-  phone?: string | null
-  birthDate?: string | null
+  avatarUrl?: string
+  bio?: string
+  location?: string
+  timezone?: string
+  locale?: string
+  // NOTE: Ajouter is_leener / is_mentor (booleens) dès que le backend les expose
 }
 
 export type UpdateProfilePayload = Partial<
@@ -46,12 +57,33 @@ export type ChangePasswordPayload = {
 const authHeaders = (token: string) => ({ Authorization: `Bearer ${token}` })
 
 export async function login(payload: CredentialsPayload) {
-  const { data } = await http.post<LoginResponse>(AUTH_LOGIN_PATH, payload)
+  const { data } = await http.post<LoginResponse>(AUTH_LOGIN_PATH, payload, { withCredentials: true })
+  return data
+}
+
+export async function createAuthToken(payload: CredentialsPayload) {
+  const { data } = await http.post<AuthTokenResponse>('/auth', payload, {
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    withCredentials: true,
+  })
+  return data
+}
+
+export async function refreshAuthToken(payload: RefreshTokenPayload) {
+  const { data } = await http.post<AuthTokenResponse>('/api/token/refresh', payload, {
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    withCredentials: true,
+  })
   return data
 }
 
 export async function register(payload: RegisterPayload) {
-  const { data } = await http.post<AuthUser>(AUTH_REGISTER_PATH, payload)
+  const { data } = await http.post<AuthUser>(AUTH_REGISTER_PATH, payload, {
+    headers: {
+      'Content-Type': 'application/ld+json',
+      Accept: 'application/ld+json',
+    },
+  })
   return data
 }
 
