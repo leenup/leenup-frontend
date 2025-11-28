@@ -8,12 +8,12 @@
       <section class="grid items-center gap-6 md:grid-cols-[auto,1fr]">
         <IconCoucou class="h-20 w-20 text-support-orange" />
         <div class="rounded-400 bg-surface-panel px-4 py-3 text-left text-primary-600 shadow-e-100">
-          A message which appears when a cursor is positioned over an icon, image, hyperlink, or other element.
+          Bienvenue ! Moi c'est "...", je t'accompagne pas à pas pour créer ton profil leener.
         </div>
       </section>
 
       <section class="flex flex-col items-center gap-4">
-        <h1 class="text-center font-sans h1 font-bold leading-tight">Lorem ipsum dolor sit amet !</h1>
+        <h1 class="text-center font-sans h1 font-bold leading-tight">Ta progression commence ici !</h1>
         <div class="w-full max-w-3xl">
           <OnboardingCarousel :slides="slides" />
         </div>
@@ -21,14 +21,18 @@
 
       <section class="grid gap-6 md:grid-cols-[1fr,auto] md:items-center">
         <div class="font-sans font-bold rounded-400 bg-surface-panel px-4 py-3 shadow-e-100">
-          Tu peux être à la fois mentor ET apprenant !
+          <p>
+            Ici tu peux, <span class="font-sans font-extrabold">être mentor ET apprenant</span>
+          </p>
         </div>
         <IconCoucou class="h-20 w-20 text-support-orange -scale-x-100" />
       </section>
 
       <section class="rounded-400 bg-primary-600 px-6 py-10 text-center text-surface-button shadow-e-300">
         <h3 class="text-2xl font-bold">Je deviens leener !</h3>
-        <p class="mt-2 text-base text-surface-button/80">Choisis si tu veux d'abord apprendre ou enseigner</p>
+        <p class="mt-2 text-base text-surface-button/80">
+          Choisis si tu veux d'abord <span class="font-sans font-extrabold">apprendre</span> ou <span class="font-sans font-extrabold">transmettre</span> (tu pourras toujours ajouter l'autre rôle plus tard)
+        </p>
         <div class="mt-8 flex flex-col gap-4">
           <button
             class="flex items-center justify-center gap-3 rounded-400 px-6 py-4 text-base font-semibold transition"
@@ -50,7 +54,7 @@
             @click="selectRole('mentor')"
           >
             <IconUser class="h-5 w-5" />
-            Je veux enseigner
+            Je veux transmettre
           </button>
         </div>
       </section>
@@ -69,7 +73,7 @@
           :disabled="!selectedRole"
           @click="startFlow"
         >
-          Commencer
+          Je commence
         </button>
       </section>
     </div>
