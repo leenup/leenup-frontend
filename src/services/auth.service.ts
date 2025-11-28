@@ -22,15 +22,17 @@ export type AuthUser = {
 export type CredentialsPayload = { email: string; password: string }
 
 export type AuthTokenResponse = {
-  token: string
+  token?: string
   refreshToken?: string
+  user?: AuthUser
 }
 
-export type RefreshTokenPayload = { refreshToken: string }
-
-export type LoginResponse =
-  | { token: string; user?: AuthUser }
-  | { accessToken: string; refreshToken?: string; user?: AuthUser }
+export type LoginResponse = {
+  token?: string
+  accessToken?: string
+  refreshToken?: string
+  user?: AuthUser
+}
 
 export type RegisterPayload = {
   email: string
@@ -54,8 +56,6 @@ export type ChangePasswordPayload = {
   newPassword: string
 }
 
-const authHeaders = (token: string) => ({ Authorization: `Bearer ${token}` })
-
 export async function login(payload: CredentialsPayload) {
   const { data } = await http.post<LoginResponse>(AUTH_LOGIN_PATH, payload, { withCredentials: true })
   return data
@@ -69,11 +69,15 @@ export async function createAuthToken(payload: CredentialsPayload) {
   return data
 }
 
-export async function refreshAuthToken(payload: RefreshTokenPayload) {
-  const { data } = await http.post<AuthTokenResponse>('/api/token/refresh', payload, {
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    withCredentials: true,
-  })
+export async function refreshAuthToken() {
+  const { data } = await http.post<AuthTokenResponse>(
+    '/api/token/refresh',
+    {},
+    {
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      withCredentials: true,
+    }
+  )
   return data
 }
 
@@ -87,28 +91,22 @@ export async function register(payload: RegisterPayload) {
   return data
 }
 
-export async function fetchProfile(token: string) {
-  const { data } = await http.get<AuthUser>(AUTH_ME_PATH, {
-    headers: authHeaders(token),
-  })
+export async function fetchProfile() {
+  const { data } = await http.get<AuthUser>(AUTH_ME_PATH)
   return data
 }
 
-export async function updateProfile(token: string, payload: UpdateProfilePayload) {
-  const { data } = await http.patch<AuthUser>(AUTH_ME_PATH, payload, {
-    headers: authHeaders(token),
-  })
+export async function updateProfile(payload: UpdateProfilePayload) {
+  const { data } = await http.patch<AuthUser>(AUTH_ME_PATH, payload)
   return data
 }
 
-export async function deleteAccount(token: string) {
-  await http.delete(AUTH_ME_PATH, { headers: authHeaders(token) })
+export async function deleteAccount() {
+  await http.delete(AUTH_ME_PATH)
 }
 
-export async function changePassword(token: string, payload: ChangePasswordPayload) {
-  await http.post(AUTH_CHANGE_PASSWORD_PATH, payload, {
-    headers: authHeaders(token),
-  })
+export async function changePassword(payload: ChangePasswordPayload) {
+  await http.post(AUTH_CHANGE_PASSWORD_PATH, payload)
 }
 
 const resolveProviderUrl = (provider: 'email' | 'google') =>

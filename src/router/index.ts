@@ -69,13 +69,22 @@ const routes: RouteRecordRaw[] = [
 
 const router = createRouter({ history: createWebHistory(), routes })
 
-router.beforeEach((to) => {
-  if (to.meta.requiresAuth || to.path.startsWith('/auth/')) {
-    const store = useAuthStore()
-    if (!store.isAuthenticated) {
-      return { name: 'auth' }
-    }
+router.beforeEach(async (to) => {
+  const store = useAuthStore()
+  const needsSessionCheck = to.meta.requiresAuth || to.meta.guestOnly || to.path.startsWith('/auth/')
+
+  if (needsSessionCheck) {
+    await store.ensureSession()
   }
+
+  if ((to.meta.requiresAuth || to.path.startsWith('/auth/')) && !store.isAuthenticated) {
+    return { name: 'auth' }
+  }
+
+  if (to.meta.guestOnly && store.isAuthenticated) {
+    return { name: 'dashboard-leener' }
+  }
+
   return true
 })
 
