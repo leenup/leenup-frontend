@@ -29,7 +29,7 @@ const DEFAULT_PAYLOAD = (form: OnboardingFormState): RegisterPayload => ({
 
 export function useOnboardingRegistration(options: UseOnboardingRegistrationOptions) {
   const authStore = useAuthStore()
-  const locale = typeof navigator !== 'undefined' ? navigator.language?.toLowerCase() : 'fr'
+  const locale = typeof navigator === 'undefined' ? 'fr' : navigator.language?.toLowerCase()
   const isFrench = locale?.startsWith('fr')
 
   const staticMessages = {
