@@ -44,7 +44,8 @@ export type RegisterPayload = {
   location?: string
   timezone?: string
   locale?: string
-  // NOTE: Ajouter is_leener / is_mentor (booleens) dès que le backend les expose
+  is_leener?: boolean
+  is_mentor?: boolean
 }
 
 export type UpdateProfilePayload = Partial<

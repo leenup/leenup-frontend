@@ -40,6 +40,18 @@ const routes: RouteRecordRaw[] = [
     meta: { guestOnly: true },
   },
   {
+    path: '/onboarding/leener/choice-theme',
+    name: 'onboarding-leener-choice-theme',
+    component: () => import('@/views/OnboardingLeenerThemes.vue'),
+    meta: { guestOnly: true },
+  },
+  {
+    path: '/onboarding/leener/profile',
+    name: 'onboarding-leener-profile',
+    component: () => import('@/views/OnboardingLeenerProfile.vue'),
+    meta: { guestOnly: true },
+  },
+  {
     path: '/onboarding/mentor',
     name: 'onboarding-mentor',
     component: () => import('@/views/OnboardingMentor.vue'),
