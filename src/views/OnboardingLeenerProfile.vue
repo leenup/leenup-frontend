@@ -5,14 +5,14 @@
 
       <div class="w-full max-w-3xl rounded-400 bg-surface-panel px-8 py-10 shadow-e-200">
         <div class="mb-8 text-center">
-          <h1 class="text-3xl font-bold mb-2">Bienvenue mentor !</h1>
-          <p class="text-primary-600">Partage ton expertise avec la communaute Leenup en creant ton profil.</p>
+          <h1 class="text-3xl font-bold mb-2">Bienvenue apprenant !</h1>
+          <p class="text-primary-600">Crée ton profil pour rejoindre la communauté Leenup.</p>
         </div>
 
         <form class="space-y-6" @submit.prevent="onSubmit">
           <div class="grid gap-4 md:grid-cols-2">
             <label class="text-left text-sm font-semibold text-primary-600">
-              Prenom
+              Prénom
               <input
                 v-model="form.firstName"
                 type="text"
@@ -79,7 +79,8 @@
               required
             />
             <div class="text-sm text-primary-600">
-              J'accepte les <a href="#" class="underline">CGU</a>, la <a href="#" class="underline">politique de confidentialite</a> et les <a href="#" class="underline">CGV</a>.
+              J’accepte les <a href="#" class="underline">CGU</a>, la <a href="#" class="underline">politique de confidentialité</a> et les
+              <a href="#" class="underline">CGV</a>.
             </div>
           </div>
 
@@ -108,12 +109,12 @@ import { useOnboardingRegistration } from '@/composables/useOnboardingRegistrati
 import { useOnboardingStore } from '@/stores/onboarding'
 
 const router = useRouter()
-const progress = 0.25
+const progress = 0.35
 const onboardingStore = useOnboardingStore()
 
 onMounted(() => {
   onboardingStore.loadFromStorage()
-  if (onboardingStore.role !== 'mentor') {
+  if (onboardingStore.role !== 'leener') {
     router.replace({ name: 'onboarding' })
   }
 })
@@ -133,11 +134,9 @@ const { form, passwordRules, canSubmit, submitting, successMessage, errorMessage
       location: '',
       timezone: 'Europe/Paris',
       locale: 'fr',
-      is_leener: false,
-      is_mentor: true,
+      is_leener: true,
+      is_mentor: false,
     }),
   })
 </script>
-
-
 
