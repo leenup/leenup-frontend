@@ -76,7 +76,7 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'toggle', theme: string): void
+  (e: 'toggle', theme: number): void
 }>()
 
 const slides = computed(() => {

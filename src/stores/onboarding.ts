@@ -7,7 +7,9 @@ const ROLE_STORAGE_KEY = 'onboarding_role'
 const LEENER_OBJECTIVES_KEY = 'onboarding_leener_objectives'
 const LEENER_THEMES_KEY = 'onboarding_leener_themes'
 
-const getStorage = () => {
+type StoragePair = { session: Storage | null; local: Storage | null }
+
+const getStorage = (): StoragePair => {
   if (typeof window === 'undefined') return { session: null, local: null }
   try {
     return { session: window.sessionStorage, local: window.localStorage }
@@ -48,7 +50,7 @@ export const useOnboardingStore = defineStore('onboarding', () => {
   const leenerObjectives = ref<number[]>([])
   const leenerThemes = ref<number[]>([])
 
-  const persistObjectives = (values: string[]) => {
+  const persistObjectives = (values: number[]) => {
     const { session, local } = getStorage()
     const payload = JSON.stringify(values)
     if (session) {
