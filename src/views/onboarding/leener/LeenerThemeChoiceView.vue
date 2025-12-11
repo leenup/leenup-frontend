@@ -38,7 +38,7 @@
             :themes="preferredCategories"
             :selected="selectedThemes"
             :max-selection="MAX_THEMES"
-            @toggle="toggleTheme"
+            @toggle="(theme) => toggleTheme(Number(theme))"
           />
           <div v-else class="grid grid-cols-2 gap-3 md:grid-cols-3">
             <button
@@ -75,7 +75,7 @@
             :themes="otherCategories"
             :selected="selectedThemes"
             :max-selection="MAX_THEMES"
-            @toggle="toggleTheme"
+            @toggle="(theme) => toggleTheme(Number(theme))"
           />
           <div v-else class="grid grid-cols-2 gap-3 md:grid-cols-3">
             <button
@@ -165,11 +165,11 @@ const canProceed = computed(() => selectedThemes.value.length > 0)
 
 const selectedCategoryIds = computed(() => {
   const ids = new Set<number>()
-  skills.value.forEach((skill) => {
+  for (const skill of skills.value) {
     if (onboardingStore.leenerObjectives.includes(skill.id) && skill.category?.id) {
       ids.add(skill.category.id)
     }
-  })
+  }
   return Array.from(ids)
 })
 
@@ -197,7 +197,7 @@ const handleNext = () => {
 }
 
 const handleBackNavigation = () => {
-  const confirmed = window.confirm('Revenir en arriere effacera vos themes selectionnes. Continuer ?')
+  const confirmed = globalThis.confirm('Revenir en arriere effacera vos themes selectionnes. Continuer ?')
   if (!confirmed) return
   onboardingStore.clearLeenerThemes()
   router.back()

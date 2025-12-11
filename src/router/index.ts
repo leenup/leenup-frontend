@@ -10,7 +10,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/discover',
     name: 'onboarding',
-    component: () => import('@/views/OnboardingView.vue'),
+    component: () => import('@/views/onboarding/DiscoverView.vue'),
     meta: { guestOnly: true },
   },
 
@@ -24,37 +24,37 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/onboarding/role',
     name: 'onboarding-role',
-    component: () => import('@/views/OnboardingRoleChoice.vue'),
+    component: () => import('@/views/onboarding/RoleChoiceView.vue'),
     meta: { guestOnly: true },
   },
   {
     path: '/onboarding/start',
     name: 'onboarding-start',
-    component: () => import('@/views/OnboardingView.vue'),
+    component: () => import('@/views/onboarding/DiscoverView.vue'),
     meta: { guestOnly: true },
   },
   {
     path: '/onboarding/leener',
     name: 'onboarding-leener',
-    component: () => import('@/views/OnboardingLeener.vue'),
+    component: () => import('@/views/onboarding/leener/LeenerObjectivesView.vue'),
     meta: { guestOnly: true },
   },
   {
     path: '/onboarding/leener/choice-theme',
     name: 'onboarding-leener-choice-theme',
-    component: () => import('@/views/OnboardingLeenerThemes.vue'),
+    component: () => import('@/views/onboarding/leener/LeenerThemeChoiceView.vue'),
     meta: { guestOnly: true },
   },
   {
     path: '/onboarding/leener/profile',
     name: 'onboarding-leener-profile',
-    component: () => import('@/views/OnboardingLeenerProfile.vue'),
+    component: () => import('@/views/onboarding/leener/LeenerProfileView.vue'),
     meta: { guestOnly: true },
   },
   {
     path: '/onboarding/mentor',
     name: 'onboarding-mentor',
-    component: () => import('@/views/OnboardingMentor.vue'),
+    component: () => import('@/views/onboarding/mentor/MentorProfileView.vue'),
     meta: { guestOnly: true },
   },
 

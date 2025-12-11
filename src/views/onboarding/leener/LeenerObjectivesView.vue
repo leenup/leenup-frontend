@@ -10,7 +10,6 @@
 
       <section class="space-y-2 text-center">
         <h1 class="text-h2 text-primary-600">Objectifs</h1>
-        <p class="text-small text-secondary-700">Ces informations nous aideront a personnaliser ton parcours.</p>
       </section>
 
       <section v-if="loading">
