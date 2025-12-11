@@ -41,7 +41,7 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-// TODO: brancher is_leener / is_mentor lorsque le backend sera prêt
+// NOTE: brancher is_leener / is_mentor lorsque le backend sera prêt
 const choose = () => { /* placeholder */ }
 
 const goNext = () => {
