@@ -10,7 +10,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/discover',
     name: 'onboarding',
-    component: () => import('@/views/OnboardingView.vue'),
+    component: () => import('@/views/onboarding/DiscoverView.vue'),
     meta: { guestOnly: true },
   },
 
@@ -24,25 +24,37 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/onboarding/role',
     name: 'onboarding-role',
-    component: () => import('@/views/OnboardingRoleChoice.vue'),
+    component: () => import('@/views/onboarding/RoleChoiceView.vue'),
     meta: { guestOnly: true },
   },
   {
     path: '/onboarding/start',
     name: 'onboarding-start',
-    component: () => import('@/views/OnboardingView.vue'),
+    component: () => import('@/views/onboarding/DiscoverView.vue'),
     meta: { guestOnly: true },
   },
   {
     path: '/onboarding/leener',
     name: 'onboarding-leener',
-    component: () => import('@/views/OnboardingLeener.vue'),
+    component: () => import('@/views/onboarding/leener/LeenerObjectivesView.vue'),
+    meta: { guestOnly: true },
+  },
+  {
+    path: '/onboarding/leener/choice-theme',
+    name: 'onboarding-leener-choice-theme',
+    component: () => import('@/views/onboarding/leener/LeenerThemeChoiceView.vue'),
+    meta: { guestOnly: true },
+  },
+  {
+    path: '/onboarding/leener/profile',
+    name: 'onboarding-leener-profile',
+    component: () => import('@/views/onboarding/leener/LeenerProfileView.vue'),
     meta: { guestOnly: true },
   },
   {
     path: '/onboarding/mentor',
     name: 'onboarding-mentor',
-    component: () => import('@/views/OnboardingMentor.vue'),
+    component: () => import('@/views/onboarding/mentor/MentorProfileView.vue'),
     meta: { guestOnly: true },
   },
 
@@ -69,13 +81,22 @@ const routes: RouteRecordRaw[] = [
 
 const router = createRouter({ history: createWebHistory(), routes })
 
-router.beforeEach((to) => {
-  if (to.meta.requiresAuth || to.path.startsWith('/auth/')) {
-    const store = useAuthStore()
-    if (!store.isAuthenticated) {
-      return { name: 'auth' }
-    }
+router.beforeEach(async (to) => {
+  const store = useAuthStore()
+  const needsSessionCheck = to.meta.requiresAuth || to.meta.guestOnly || to.path.startsWith('/auth/')
+
+  if (needsSessionCheck) {
+    await store.ensureSession()
   }
+
+  if ((to.meta.requiresAuth || to.path.startsWith('/auth/')) && !store.isAuthenticated) {
+    return { name: 'auth' }
+  }
+
+  if (to.meta.guestOnly && store.isAuthenticated) {
+    return { name: 'dashboard-leener' }
+  }
+
   return true
 })
 
