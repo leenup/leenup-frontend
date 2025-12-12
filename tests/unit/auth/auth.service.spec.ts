@@ -25,6 +25,7 @@ import {
   deleteAccount,
   fetchProfile,
   login,
+  logout,
   redirectToProvider,
   refreshAuthToken,
   register,
@@ -79,19 +80,12 @@ describe('auth.service', () => {
     )
   })
 
-  it('refreshAuthToken poste sur /api/token/refresh', async () => {
+  it('refreshAuthToken poste sur /auth/refresh', async () => {
     httpSpies.post.mockResolvedValueOnce({ data: {} })
 
     await refreshAuthToken()
 
-    expect(httpSpies.post).toHaveBeenCalledWith(
-      '/api/token/refresh',
-      {},
-      expect.objectContaining({
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        withCredentials: true,
-      })
-    )
+    expect(httpSpies.post).toHaveBeenCalledWith('/auth/refresh', {})
   })
 
   it('register appelle POST /register avec les bons headers', async () => {
@@ -151,6 +145,14 @@ describe('auth.service', () => {
     await changePassword(payload)
 
     expect(httpSpies.post).toHaveBeenCalledWith('/me/change-password', payload)
+  })
+
+  it('logout appelle POST /auth/logout', async () => {
+    httpSpies.post.mockResolvedValueOnce({ data: null })
+
+    await logout()
+
+    expect(httpSpies.post).toHaveBeenCalledWith('/auth/logout', {})
   })
 
   it('redirectToProvider redirige vers les bons endpoints', () => {
