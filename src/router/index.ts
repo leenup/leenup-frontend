@@ -83,7 +83,7 @@ const router = createRouter({ history: createWebHistory(), routes })
 
 router.beforeEach(async (to) => {
   const store = useAuthStore()
-  const needsSessionCheck = to.meta.requiresAuth || to.meta.guestOnly || to.path.startsWith('/auth/')
+  const needsSessionCheck = to.meta.requiresAuth || to.path.startsWith('/auth/')
 
   if (needsSessionCheck) {
     await store.ensureSession()
