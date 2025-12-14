@@ -11,6 +11,7 @@ const serviceMocks = vi.hoisted(() => ({
   deleteAccount: vi.fn(),
   updateProfile: vi.fn(),
   changePassword: vi.fn(),
+  logout: vi.fn(),
 }))
 
 vi.mock('@/services/auth.service', () => serviceMocks)
@@ -26,6 +27,7 @@ describe('useAuthStore', () => {
     serviceMocks.createAuthToken.mockResolvedValue({})
     serviceMocks.refreshAuthToken.mockResolvedValue({})
     serviceMocks.updateProfile.mockResolvedValue({ ...user, firstName: 'Jane' })
+    serviceMocks.logout.mockResolvedValue(undefined)
   })
 
   it('login persiste l\'utilisateur renvoye par le backend', async () => {
@@ -68,13 +70,24 @@ describe('useAuthStore', () => {
     expect(serviceMocks.refreshAuthToken).toHaveBeenCalledTimes(1)
   })
 
-  it('logout vide le state et marque la session verifiee', () => {
+  it('refreshTokens nettoie la session si le refresh echoue', async () => {
+    const store = useAuthStore()
+    serviceMocks.refreshAuthToken.mockRejectedValueOnce(new Error('expired'))
+    store.user = { ...user }
+
+    await expect(store.refreshTokens()).rejects.toThrow('expired')
+    expect(store.user).toBeNull()
+    expect(store.sessionChecked).toBe(true)
+  })
+
+  it('logout vide le state et marque la session verifiee', async () => {
     const store = useAuthStore()
     store.user = { ...user }
     store.sessionChecked = false
 
-    store.logout()
+    await store.logout()
 
+    expect(serviceMocks.logout).toHaveBeenCalledTimes(1)
     expect(store.user).toBeNull()
     expect(store.sessionChecked).toBe(true)
   })

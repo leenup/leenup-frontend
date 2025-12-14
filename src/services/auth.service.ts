@@ -17,6 +17,8 @@ export type AuthUser = {
   birthDate?: string | null
   createdAt?: string
   updatedAt?: string
+  is_leener?: boolean
+  is_mentor?: boolean
 }
 
 export type CredentialsPayload = { email: string; password: string }
@@ -71,14 +73,7 @@ export async function createAuthToken(payload: CredentialsPayload) {
 }
 
 export async function refreshAuthToken() {
-  const { data } = await http.post<AuthTokenResponse>(
-    '/api/token/refresh',
-    {},
-    {
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      withCredentials: true,
-    }
-  )
+  const { data } = await http.post<AuthTokenResponse>('/auth/refresh', {})
   return data
 }
 
@@ -108,6 +103,10 @@ export async function deleteAccount() {
 
 export async function changePassword(payload: ChangePasswordPayload) {
   await http.post(AUTH_CHANGE_PASSWORD_PATH, payload)
+}
+
+export async function logout() {
+  await http.post('/auth/logout', {})
 }
 
 const resolveProviderUrl = (provider: 'email' | 'google') =>
