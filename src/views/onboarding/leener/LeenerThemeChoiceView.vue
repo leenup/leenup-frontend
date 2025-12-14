@@ -104,7 +104,7 @@
       </section>
 
       <button
-        class="mt-4 w-full rounded-400 bg-primary-900 px-6 py-3 text-base font-semibold text-surface-button shadow-e-300 transition disabled:cursor-not-allowed disabled:bg-secondary-500 disabled:text-primary-600"
+        class="mt-4 w-full rounded-400 bg-primary-600 px-6 py-3 text-base font-semibold text-surface-button shadow-e-300 transition disabled:cursor-not-allowed disabled:bg-secondary-200 disabled:text-secondary-600 disabled:shadow-none disabled:border disabled:border-secondary-400"
         :disabled="!canProceed || loading"
         @click="handleNext"
       >

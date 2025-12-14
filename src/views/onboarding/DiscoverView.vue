@@ -6,8 +6,8 @@
       </header>
 
       <section class="grid items-center gap-6 md:grid-cols-[auto,1fr]">
-        <IconCoucou class="h-20 w-20 text-support-orange" />
-        <div class="rounded-400 bg-surface-panel px-4 py-3 text-left text-primary-600 shadow-e-100">
+        <IconCoucou class="h-20 w-20 text-secondary-600" />
+        <div class="rounded-400 bg-surface-panel px-4 py-3 text-left text-primary-400 shadow-e-100">
           Bienvenue ! Moi c'est "...", je t'accompagne pas à pas pour créer ton profil leener.
         </div>
       </section>
@@ -20,17 +20,17 @@
       </section>
 
       <section class="grid gap-6 md:grid-cols-[1fr,auto] md:items-center">
-        <div class="font-sans font-bold rounded-400 bg-surface-panel px-4 py-3 shadow-e-100">
+        <div class="font-sans font-bold rounded-400 bg-surface-panel text-primary-400 px-4 py-3 shadow-e-100">
           <p>
             Ici tu peux, <span class="font-sans font-extrabold">être mentor ET apprenant</span>
           </p>
         </div>
-        <IconCoucou class="h-20 w-20 text-support-orange -scale-x-100" />
+        <IconCoucou class="h-20 w-20 text-secondary-600 -scale-x-100" />
       </section>
 
-      <section class="rounded-400 bg-primary-600 px-6 py-10 text-center text-surface-button shadow-e-300">
+      <section class="rounded-400 bg-secondary-200 px-6 py-10 text-center text-surface-fg shadow-e-300">
         <h3 class="text-2xl font-bold">Je deviens leener !</h3>
-        <p class="mt-2 text-base text-surface-button/80">
+        <p class="mt-2 text-base text-surface-fg/80">
           Choisis si tu veux d'abord <span class="font-sans font-extrabold">apprendre</span> ou <span class="font-sans font-extrabold">transmettre</span> (tu pourras toujours ajouter l'autre rôle plus tard)
         </p>
         <div class="mt-8 flex flex-col gap-4">
@@ -38,7 +38,7 @@
             class="flex items-center justify-center gap-3 rounded-400 px-6 py-4 text-base font-semibold transition"
             :class="selectedRole === 'leener'
               ? 'bg-cta-500 text-surface-button shadow-e-300'
-              : 'bg-surface-panel text-primary-600 shadow-e-200 hover:bg-secondary-500'"
+              : 'bg-surface-panel text-primary-600 shadow-e-200 hover:bg-secondary-100'"
             :aria-pressed="selectedRole === 'leener'"
             @click="selectRole('leener')"
           >
@@ -49,7 +49,7 @@
             class="flex items-center justify-center gap-3 rounded-400 px-6 py-4 text-base font-semibold transition"
             :class="selectedRole === 'mentor'
               ? 'bg-cta-500 text-surface-button shadow-e-300'
-              : 'bg-surface-panel text-primary-600 shadow-e-200 hover:bg-secondary-500'"
+              : 'bg-surface-panel text-primary-600 shadow-e-200 hover:bg-secondary-100'"
             :aria-pressed="selectedRole === 'mentor'"
             @click="selectRole('mentor')"
           >
@@ -60,8 +60,8 @@
       </section>
 
       <section class="grid gap-6 md:grid-cols-[auto,1fr] md:items-center">
-        <IconCoucou class="h-20 w-20 text-support-orange" />
-        <div class="rounded-400 bg-surface-panel px-4 py-3 text-primary-600 shadow-e-100">
+        <IconCoucou class="h-20 w-20 text-secondary-600" />
+        <div class="rounded-400 bg-surface-panel px-4 py-3 text-primary-400 shadow-e-100">
           Savais-tu que 90% des leeners... etc
         </div>
       </section>
@@ -69,7 +69,7 @@
       <section class="flex justify-center pb-8">
         <button
           class="w-full max-w-md rounded-400 px-6 py-3 text-surface-button shadow-e-300 transition"
-          :class="selectedRole ? 'bg-cta-600 hover:bg-primary-700' : 'bg-secondary-500 text-primary-600 opacity-60 cursor-not-allowed'"
+          :class="selectedRole ? 'bg-secondary-600 hover:bg-secondary-700' : 'bg-secondary-300 opacity-60 cursor-not-allowed border border-solid border-secondary-600'"
           :disabled="!selectedRole"
           @click="startFlow"
         >

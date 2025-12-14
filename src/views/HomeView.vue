@@ -22,7 +22,7 @@
         Je découvre Leenup
       </button>
       <button
-        class="rounded-400 bg-secondary-500 px-8 py-4 text-lg text-primary-600 shadow-e-100 transition hover:bg-secondary-600 w-full"
+        class="rounded-400 bg-secondary-500 px-8 py-4 text-lg text-surface-button shadow-e-100 transition hover:bg-secondary-600 w-full"
         @click="login"
       >
         J’ai déjà un compte
