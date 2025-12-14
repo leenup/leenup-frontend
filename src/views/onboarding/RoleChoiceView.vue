@@ -22,15 +22,6 @@
           Je veux enseigner
         </button>
       </div>
-
-      <button
-        class="mt-4 w-full rounded-400 px-6 py-3 text-base font-semibold transition"
-        :class="'bg-cta-500 text-surface-button shadow-e-300 hover:bg-cta-600'"
-        :disabled="false"
-        @click="goNext"
-      >
-        Commencer
-      </button>
     </div>
   </main>
 </template>

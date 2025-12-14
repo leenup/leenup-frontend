@@ -27,13 +27,24 @@
             placeholder="monadresse@mail.com"
             class="w-full rounded-300 border border-secondary-300 bg-white px-4 py-3 text-primary-600 shadow-e-100 focus:border-cta-500 focus:outline-none focus:ring-2 focus:ring-cta-200"
           />
-          <input
-            v-model="password"
-            type="password"
-            required
-            placeholder="Mot de passe"
-            class="w-full rounded-300 border border-secondary-300 bg-white px-4 py-3 text-primary-600 shadow-e-100 focus:border-cta-500 focus:outline-none focus:ring-2 focus:ring-cta-200"
-          />
+          <div class="relative">
+            <input
+              v-model="password"
+              :type="showPassword ? 'text' : 'password'"
+              required
+              placeholder="Mot de passe"
+              class="w-full rounded-300 border border-secondary-300 bg-white px-4 py-3 pr-12 text-primary-600 shadow-e-100 focus:border-cta-500 focus:outline-none focus:ring-2 focus:ring-cta-200"
+            />
+            <button
+              type="button"
+              class="absolute inset-y-0 right-3 flex items-center text-secondary-700 transition hover:text-primary-600"
+              @click="showPassword = !showPassword"
+              :aria-pressed="showPassword.toString()"
+              :title="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+            >
+              <component :is="showPassword ? IconEyeOff : IconEye" />
+            </button>
+          </div>
         </div>
 
         <button
@@ -65,6 +76,8 @@ import BackButton from '@/components/common/BackButton.vue'
 import ProgressBar from '@/components/common/ProgressBar.vue'
 import IconCoucou from '@/components/icons/IconCoucou.vue'
 import IconUser from '@/components/icons/IconHome.vue'
+import IconEye from '@/components/icons/IconEye.vue'
+import IconEyeOff from '@/components/icons/IconEyeOff.vue'
 import { useAuthStore } from '@/stores/auth'
 import Toast from '@/components/common/Toast.vue'
 
@@ -72,18 +85,25 @@ const router = useRouter()
 const authStore = useAuthStore()
 const email = ref('')
 const password = ref('')
+const showPassword = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
 let redirectTimer: ReturnType<typeof setTimeout> | undefined
 
 const translateError = (msg?: string) => {
-  if (!msg) return 'Une erreur est survenue. Merci de réessayer.'
+  if (!msg) return 'Une erreur est survenue. Merci de reessayer.'
   const normalized = msg.toLowerCase()
-  if (normalized.includes('network')) return 'Connexion serveur impossible. Vérifie ta connexion ou réessaie plus tard.'
-  if (normalized.includes('expired') || normalized.includes('jwt')) return 'Votre session a expiré, merci de vous reconnecter.'
-  if (normalized.includes('invalid') || normalized.includes('bad credentials')) return 'Identifiants incorrects. Vérifiez votre email et votre mot de passe.'
-  if (normalized.includes('unauthorized')) return 'Vous n’êtes pas autorisé. Merci de vous reconnecter.'
+  if (normalized.includes('network')) return 'Connexion serveur impossible. Verifie ta connexion ou reessaye plus tard.'
+  if (normalized.includes('expired') || normalized.includes('jwt')) return 'Votre session a expire, merci de vous reconnecter.'
+  if (normalized.includes('invalid') || normalized.includes('bad credentials')) return 'Identifiants incorrects. Verifiez votre email et votre mot de passe.'
+  if (normalized.includes('unauthorized')) return 'Vous netes pas autorise. Merci de vous reconnecter.'
   return msg
+}
+
+const resolveDashboardRoute = () => {
+  const user = authStore.user
+  if (user?.is_mentor) return { name: 'dashboard-mentor' }
+  return { name: 'dashboard-leener' }
 }
 
 const onSubmit = async () => {
@@ -95,11 +115,9 @@ const onSubmit = async () => {
   }
   try {
     await authStore.authenticate({ email: email.value, password: password.value })
-    await authStore.fetchProfile()
-    successMessage.value = 'Connexion réussie'
+    successMessage.value = 'Connexion reussie'
     redirectTimer = globalThis.setTimeout(() => {
-      // NOTE: router vers dashboard mentor si is_mentor true
-      router.push({ name: 'dashboard-leener' })
+      router.push(resolveDashboardRoute())
     }, 5000)
   } catch (err: any) {
     const apiMessage = err?.response?.data?.message || err?.response?.data?.error || err?.message

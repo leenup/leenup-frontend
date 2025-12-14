@@ -7,6 +7,7 @@ import {
   deleteAccount as deleteAccountRequest,
   fetchProfile as fetchProfileRequest,
   login as loginRequest,
+  logout as logoutRequest,
   register as registerRequest,
   updateProfile as updateProfileRequest,
   type AuthUser,
@@ -63,11 +64,22 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function refreshTokens() {
-    await refreshAuthToken()
+    try {
+      await refreshAuthToken()
+    } catch (error) {
+      markSignedOut()
+      throw error
+    }
   }
 
   async function logout() {
-    markSignedOut()
+    try {
+      await logoutRequest()
+    } catch {
+      // noop: even if backend unreachable we clear local session
+    } finally {
+      markSignedOut()
+    }
   }
 
   async function fetchProfile() {

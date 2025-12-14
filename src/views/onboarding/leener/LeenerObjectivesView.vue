@@ -53,12 +53,21 @@
       </OnboardingScrollableList>
 
       <button
-        class="mt-4 w-full rounded-400 bg-primary-900 px-6 py-3 text-base font-semibold text-surface-button shadow-e-300 transition disabled:cursor-not-allowed disabled:bg-secondary-500 disabled:text-primary-600"
+        class="mt-4 w-full rounded-400 bg-primary-600 px-6 py-3 text-base font-semibold text-surface-button shadow-e-300 transition disabled:cursor-not-allowed disabled:bg-secondary-200 disabled:text-secondary-600 disabled:shadow-none disabled:border disabled:border-secondary-400"
         :disabled="!canProceed || loading"
         @click="handleNext"
       >
         Suivant
       </button>
+      <ConfirmDialog
+        :open="showBackDialog"
+        title="Quitter l'onboarding ?"
+        description="Tu vas perdre les informations renseignees pour ce parcours. Es-tu sure de vouloir revenir a l'ecran precedent ?"
+        confirm-label="Revenir en arriere"
+        cancel-label="Rester ici"
+        @update:open="showBackDialog = $event"
+        @confirm="confirmBackNavigation"
+      />
     </div>
   </main>
 </template>
@@ -70,6 +79,7 @@ import IconTarget from '@/components/icons/IconHome.vue'
 import OnboardingStepHeader from '@/components/onboarding/OnboardingStepHeader.vue'
 import OnboardingHintCard from '@/components/onboarding/OnboardingHintCard.vue'
 import OnboardingScrollableList from '@/components/onboarding/OnboardingScrollableList.vue'
+import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 import { useOnboardingStore } from '@/stores/onboarding'
 import { useCatalogStore } from '@/stores/catalog'
 
@@ -81,6 +91,7 @@ const progress = 0.16
 
 const loading = ref(false)
 const errorMessage = ref('')
+const showBackDialog = ref(false)
 
 const fetchSkills = async () => {
   loading.value = true
@@ -120,11 +131,24 @@ const handleNext = () => {
   router.push({ name: 'onboarding-leener-choice-theme' })
 }
 
-const handleBackNavigation = () => {
-  const confirmed = globalThis.confirm('Retourner en arriere effacera les objectifs selectionnes. Continuer ?')
-  if (!confirmed) return
+const clearSession = () => {
   onboardingStore.clearLeenerObjectives()
   onboardingStore.clearLeenerThemes()
-  router.back()
+  onboardingStore.clearRole()
+  if (typeof window !== 'undefined') {
+    window.sessionStorage.removeItem('onboarding_role')
+    window.sessionStorage.removeItem('onboarding_leener_objectives')
+    window.sessionStorage.removeItem('onboarding_leener_themes')
+  }
+}
+
+const handleBackNavigation = () => {
+  showBackDialog.value = true
+}
+
+const confirmBackNavigation = () => {
+  clearSession()
+  showBackDialog.value = false
+  router.push({ name: 'onboarding' })
 }
 </script>
