@@ -1,6 +1,6 @@
 <template>
   <button
-    class="inline-flex items-center justify-center rounded-200 px-4 py-2 btn-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cta-300 disabled:opacity-50"
+    class="inline-flex items-center justify-center rounded-200 px-4 py-2 btn-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cta-300 disabled:cursor-not-allowed disabled:bg-secondary-200 disabled:text-secondary-600 disabled:shadow-none disabled:border disabled:border-secondary-400"
     :class="variantClasses"
     v-bind="$attrs"
   ><slot /></button>
