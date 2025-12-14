@@ -17,6 +17,8 @@ export type AuthUser = {
   birthDate?: string | null
   createdAt?: string
   updatedAt?: string
+  is_leener?: boolean
+  is_mentor?: boolean
 }
 
 export type CredentialsPayload = { email: string; password: string }

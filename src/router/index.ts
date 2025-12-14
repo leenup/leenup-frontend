@@ -59,8 +59,8 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
-    path: '/auth/dashboard',
-    name: 'dashboard',
+    path: '/auth/dashboard-mentor',
+    name: 'dashboard-mentor',
     component: () => import('@/views/DashboardView.vue'),
     meta: { requiresAuth: true },
   },
@@ -94,7 +94,8 @@ router.beforeEach(async (to) => {
   }
 
   if (to.meta.guestOnly && store.isAuthenticated) {
-    return { name: 'dashboard-leener' }
+    const target = store.user?.is_mentor ? 'dashboard-mentor' : 'dashboard-leener'
+    return { name: target }
   }
 
   return true
