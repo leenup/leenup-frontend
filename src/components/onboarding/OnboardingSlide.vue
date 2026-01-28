@@ -1,19 +1,19 @@
 <template>
-  <article class="bg-secondary-200 text-surface-button rounded-3xl p-6 flex flex-col items-center justify-between min-h-[50vh]">
-    <div class="w-full flex-1 flex flex-col items-center justify-center gap-4">
+  <article class="rounded-400 border border-secondary-200 bg-surface-panel shadow-e-200 flex min-h-[50vh] flex-col overflow-hidden">
+    <div class="w-full">
       <img
         v-if="image"
         :src="image"
         :alt="imageAlt || title"
-        class="rounded-200 w-full h-48 md:h-60 object-cover"
+        class="w-full h-52 md:h-64 object-cover"
       />
-      <div v-else class="flex h-48 w-full items-center justify-center rounded-300 bg-primary-700">
-        {{ image }}
+      <div v-else class="flex h-52 md:h-64 w-full items-center justify-center bg-hero-gradient text-surface-button">
+        <span class="text-sm font-semibold tracking-wide">Bientot</span>
       </div>
     </div>
-    <div class="w-full pt-4 text-center">
-      <h3 class="font-sans text-2xl mb-2 text-surface-fg">{{ title }}</h3>
-      <p class="opacity-90 leading-relaxed font-sans typography-text text-surface-fg">{{ description }}</p>
+    <div class="w-full flex-1 px-6 pb-6 pt-5 text-center">
+      <h3 class="font-sans text-2xl mb-2 text-primary-800">{{ title }}</h3>
+      <p class="leading-relaxed font-sans text-secondary-700">{{ description }}</p>
     </div>
     <slot />
   </article>

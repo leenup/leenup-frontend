@@ -28,17 +28,17 @@
         <IconCoucou class="h-20 w-20 text-secondary-600 -scale-x-100" />
       </section>
 
-      <section class="rounded-400 bg-secondary-200 px-6 py-10 text-center text-surface-fg shadow-e-300">
-        <h3 class="text-2xl font-bold">Je deviens leener !</h3>
-        <p class="mt-2 text-base text-surface-fg/80">
+      <section class="rounded-400 bg-surface-panel px-6 py-10 text-center text-primary-700 shadow-e-200 border border-secondary-200">
+        <h3 class="text-2xl font-bold text-primary-800">Je deviens leener !</h3>
+        <p class="mt-2 text-base text-primary-600">
           Choisis si tu veux d'abord <span class="font-sans font-extrabold">apprendre</span> ou <span class="font-sans font-extrabold">transmettre</span> (tu pourras toujours ajouter l'autre rôle plus tard)
         </p>
         <div class="mt-8 flex flex-col gap-4">
           <button
-            class="flex items-center justify-center gap-3 rounded-400 px-6 py-4 text-base font-semibold transition"
+            class="flex items-center justify-center gap-3 rounded-400 border px-6 py-4 text-base font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-200"
             :class="selectedRole === 'leener'
-              ? 'bg-cta-500 text-surface-button shadow-e-300'
-              : 'bg-surface-panel text-primary-600 shadow-e-200 hover:bg-secondary-100'"
+              ? 'bg-primary-600 text-surface-button border-primary-600 shadow-e-300'
+              : 'bg-white text-primary-700 border-secondary-200 shadow-e-100 hover:border-primary-300 hover:bg-primary-50'"
             :aria-pressed="selectedRole === 'leener'"
             @click="selectRole('leener')"
           >
@@ -46,10 +46,10 @@
             Je veux apprendre
           </button>
           <button
-            class="flex items-center justify-center gap-3 rounded-400 px-6 py-4 text-base font-semibold transition"
+            class="flex items-center justify-center gap-3 rounded-400 border px-6 py-4 text-base font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-200"
             :class="selectedRole === 'mentor'
-              ? 'bg-cta-500 text-surface-button shadow-e-300'
-              : 'bg-surface-panel text-primary-600 shadow-e-200 hover:bg-secondary-100'"
+              ? 'bg-primary-600 text-surface-button border-primary-600 shadow-e-300'
+              : 'bg-white text-primary-700 border-secondary-200 shadow-e-100 hover:border-primary-300 hover:bg-primary-50'"
             :aria-pressed="selectedRole === 'mentor'"
             @click="selectRole('mentor')"
           >
@@ -68,8 +68,8 @@
 
       <section class="flex justify-center pb-8">
         <button
-          class="w-full max-w-md rounded-400 px-6 py-3 text-surface-button shadow-e-300 transition"
-          :class="selectedRole ? 'bg-secondary-600 hover:bg-secondary-700' : 'bg-secondary-300 opacity-60 cursor-not-allowed border border-solid border-secondary-600'"
+          class="w-full max-w-md rounded-400 px-6 py-3 text-surface-button shadow-e-300 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-200"
+          :class="selectedRole ? 'bg-primary-600 hover:bg-primary-700' : 'bg-secondary-300 text-secondary-600 opacity-60 cursor-not-allowed border border-solid border-secondary-400'"
           :disabled="!selectedRole"
           @click="startFlow"
         >
@@ -85,29 +85,20 @@ import OnboardingCarousel from '@/components/onboarding/OnboardingCarousel.vue'
 import IconUser from '@/components/icons/IconHome.vue'
 import IconCoucou from '@/components/icons/IconCoucou.vue'
 import BackButton from '@/components/common/BackButton.vue'
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useOnboardingStore } from '@/stores/onboarding'
 
 const router = useRouter()
-const onboardingStore = useOnboardingStore()
-const goBack = () => router.back()
 const selectedRole = ref<'leener' | 'mentor' | null>(null)
-
-onMounted(() => {
-  onboardingStore.loadFromStorage()
-  selectedRole.value = onboardingStore.role
-})
 
 const selectRole = (role: 'leener' | 'mentor') => {
   selectedRole.value = role
-  onboardingStore.setRole(role)
 }
 const startFlow = () => {
   if (selectedRole.value === 'leener') {
-    router.push({ name: 'onboarding-leener' })
+    router.push({ name: 'register', params: { profile: 'leener' } })
   } else if (selectedRole.value === 'mentor') {
-    router.push({ name: 'onboarding-mentor' })
+    router.push({ name: 'register', params: { profile: 'mentor' } })
   } else {
     router.push({ name: 'auth' })
   }

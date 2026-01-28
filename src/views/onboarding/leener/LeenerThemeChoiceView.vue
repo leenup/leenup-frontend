@@ -146,13 +146,8 @@ const fetchCatalog = async () => {
 }
 
 onMounted(async () => {
-  onboardingStore.loadFromStorage()
-  if (onboardingStore.role !== 'leener') {
-    router.replace({ name: 'onboarding' })
-    return
-  }
   if (onboardingStore.leenerObjectives.length === 0) {
-    router.replace({ name: 'onboarding-leener' })
+    router.replace({ name: 'leener-onboarding-objectives' })
     return
   }
   await fetchCatalog()
@@ -193,7 +188,7 @@ const toggleTheme = (categoryId: number) => {
 const handleNext = () => {
   if (!canProceed.value) return
   onboardingStore.setLeenerThemes([...selectedThemes.value])
-  router.push({ name: 'onboarding-leener-profile' })
+  router.push({ name: 'leener-onboarding' })
 }
 
 const handleBackNavigation = () => {
