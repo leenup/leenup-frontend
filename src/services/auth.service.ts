@@ -41,13 +41,13 @@ export type RegisterPayload = {
   plainPassword: string
   firstName: string
   lastName: string
+  profiles: Array<'leener' | 'mentor'>
   avatarUrl?: string
   bio?: string
   location?: string
   timezone?: string
   locale?: string
-  is_leener?: boolean
-  is_mentor?: boolean
+  birthdate?: string
 }
 
 export type UpdateProfilePayload = Partial<

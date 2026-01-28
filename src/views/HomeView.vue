@@ -36,6 +36,6 @@ import AppBrand from '@/components/brand/AppBrand.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const discover = () => router.push({ name: 'onboarding' })
+const discover = () => router.push({ name: 'discover' })
 const login = () => router.push({ name: 'auth' })
 </script>

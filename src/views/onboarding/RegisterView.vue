@@ -5,14 +5,14 @@
 
       <div class="w-full max-w-3xl rounded-400 bg-surface-panel px-8 py-10 shadow-e-200">
         <div class="mb-8 text-center">
-          <h1 class="text-3xl font-bold mb-2">Bienvenue apprenant !</h1>
-          <p class="text-primary-600">Crée ton profil pour rejoindre la communauté Leenup.</p>
+          <h1 class="text-3xl font-bold mb-2">{{ title }}</h1>
+          <p class="text-primary-600">{{ subtitle }}</p>
         </div>
 
         <form class="space-y-6" @submit.prevent="onSubmit">
           <div class="grid gap-4 md:grid-cols-2">
             <label class="text-left text-sm font-semibold text-primary-600">
-              Prénom
+              Prenom
               <input
                 v-model="form.firstName"
                 type="text"
@@ -63,7 +63,7 @@
                   class="flex h-5 w-5 items-center justify-center rounded-full transition-all duration-200"
                   :class="rule.valid ? 'bg-cta-500 text-surface-button' : 'bg-secondary-500 text-primary-600'"
                 >
-                  {{ rule.valid ? '✓' : '✗' }}
+                  {{ rule.valid ? 'OK' : 'X' }}
                 </span>
                 <span>{{ rule.label }}</span>
               </li>
@@ -79,7 +79,7 @@
               required
             />
             <div class="text-sm text-primary-600">
-              J’accepte les <a href="#" class="underline">CGU</a>, la <a href="#" class="underline">politique de confidentialité</a> et les
+              J'accepte les <a href="#" class="underline">CGU</a>, la <a href="#" class="underline">politique de confidentialite</a> et les
               <a href="#" class="underline">CGV</a>.
             </div>
           </div>
@@ -101,42 +101,28 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import OnboardingStepHeader from '@/components/onboarding/OnboardingStepHeader.vue'
 import Toast from '@/components/common/Toast.vue'
 import { useOnboardingRegistration } from '@/composables/useOnboardingRegistration'
-import { useOnboardingStore } from '@/stores/onboarding'
 
+type Profile = 'leener' | 'mentor'
+
+const props = defineProps<{ profile: Profile }>()
 const router = useRouter()
-const progress = 0.35
-const onboardingStore = useOnboardingStore()
+const progress = 0.15
 
-onMounted(() => {
-  onboardingStore.loadFromStorage()
-  if (onboardingStore.role !== 'leener') {
-    router.replace({ name: 'onboarding' })
-  }
+const isMentor = computed(() => props.profile === 'mentor')
+const title = computed(() => (isMentor.value ? 'Bienvenue mentor !' : 'Bienvenue apprenant !'))
+const subtitle = computed(() =>
+  isMentor.value ? "Partage ton expertise avec la communaute Leenup en creant ton profil." : 'Cree ton profil pour rejoindre la communaute Leenup.'
+)
+
+const { form, passwordRules, canSubmit, submitting, successMessage, errorMessage, onSubmit } = useOnboardingRegistration({
+  profile: props.profile,
+  afterSuccess: () => {
+    router.push({ name: isMentor.value ? 'mentor-onboarding' : 'leener-onboarding' })
+  },
 })
-
-const { form, passwordRules, canSubmit, submitting, successMessage, errorMessage, onSubmit } =
-  useOnboardingRegistration({
-    afterSuccess: (firstName) => {
-      router.push({ name: 'theme', state: { firstName } })
-    },
-    buildPayload: (state) => ({
-      email: state.email,
-      plainPassword: state.password,
-      firstName: state.firstName,
-      lastName: state.lastName,
-      avatarUrl: '',
-      bio: '',
-      location: '',
-      timezone: 'Europe/Paris',
-      locale: 'fr',
-      is_leener: true,
-      is_mentor: false,
-    }),
-  })
 </script>
-

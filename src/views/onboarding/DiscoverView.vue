@@ -85,29 +85,20 @@ import OnboardingCarousel from '@/components/onboarding/OnboardingCarousel.vue'
 import IconUser from '@/components/icons/IconHome.vue'
 import IconCoucou from '@/components/icons/IconCoucou.vue'
 import BackButton from '@/components/common/BackButton.vue'
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useOnboardingStore } from '@/stores/onboarding'
 
 const router = useRouter()
-const onboardingStore = useOnboardingStore()
-const goBack = () => router.back()
 const selectedRole = ref<'leener' | 'mentor' | null>(null)
-
-onMounted(() => {
-  onboardingStore.loadFromStorage()
-  selectedRole.value = onboardingStore.role
-})
 
 const selectRole = (role: 'leener' | 'mentor') => {
   selectedRole.value = role
-  onboardingStore.setRole(role)
 }
 const startFlow = () => {
   if (selectedRole.value === 'leener') {
-    router.push({ name: 'onboarding-leener' })
+    router.push({ name: 'register', params: { profile: 'leener' } })
   } else if (selectedRole.value === 'mentor') {
-    router.push({ name: 'onboarding-mentor' })
+    router.push({ name: 'register', params: { profile: 'mentor' } })
   } else {
     router.push({ name: 'auth' })
   }
