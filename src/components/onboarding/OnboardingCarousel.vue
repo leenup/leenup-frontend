@@ -7,7 +7,7 @@
     @pointercancel="onPointerUp"
     @pointerleave="onPointerUp"
   >
-    <div class="relative overflow-hidden rounded-300">
+    <div class="relative overflow-hidden rounded-400">
       <div class="flex transition-transform duration-300 ease-out" :style="{ transform: `translateX(-${current * 100}%)` }">
         <div v-for="(s, i) in slides" :key="i" class="min-w-full">
           <OnboardingSlide v-bind="s">
@@ -22,7 +22,7 @@
 
       <!-- Desktop arrows -->
       <button
-        class="absolute left-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-secondary-500 text-primary-600 shadow-e-100 transition hover:bg-secondary-600 md:flex"
+        class="absolute left-0 top-52 md:top-64 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-secondary-200 bg-white text-primary-700 shadow-e-100 transition hover:border-primary-200 hover:text-primary-800 md:flex disabled:opacity-40 disabled:hover:border-secondary-200"
         :disabled="!canPrev"
         @click="prev"
         aria-label="Précédent"
@@ -32,7 +32,7 @@
         </svg>
       </button>
       <button
-        class="absolute right-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-secondary-500 text-primary-600 shadow-e-100 transition hover:bg-secondary-600 md:flex"
+        class="absolute right-0 top-52 md:top-64 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-secondary-200 bg-white text-primary-700 shadow-e-100 transition hover:border-primary-200 hover:text-primary-800 md:flex"
         @click="next"
         aria-label="Suivant"
       >
