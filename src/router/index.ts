@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
-// import { useOnboardingStore } from '@/stores/onboarding'
 import { useAuthStore } from '@/stores/auth'
 
 const routes: RouteRecordRaw[] = [
@@ -9,7 +8,7 @@ const routes: RouteRecordRaw[] = [
   // Discover Application - Slider
   {
     path: '/discover',
-    name: 'onboarding',
+    name: 'discover',
     component: () => import('@/views/onboarding/DiscoverView.vue'),
     meta: { guestOnly: true },
   },
@@ -22,40 +21,38 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
-    path: '/onboarding/role',
-    name: 'onboarding-role',
-    component: () => import('@/views/onboarding/RoleChoiceView.vue'),
+    path: '/:profile(leener|mentor)/register',
+    name: 'register',
+    component: () => import('@/views/onboarding/RegisterView.vue'),
+    props: true,
+    alias: ['/:profile(leener|mentor)/register/'],
     meta: { guestOnly: true },
   },
   {
-    path: '/onboarding/start',
-    name: 'onboarding-start',
-    component: () => import('@/views/onboarding/DiscoverView.vue'),
-    meta: { guestOnly: true },
+    path: '/leener/onboarding',
+    name: 'leener-onboarding',
+    component: () => import('@/views/onboarding/leener/LeenerOnboardingView.vue'),
+    alias: ['/leener/onboarding/'],
+    meta: { requiresAuth: true },
   },
   {
-    path: '/onboarding/leener',
-    name: 'onboarding-leener',
+    path: '/mentor/onboarding',
+    name: 'mentor-onboarding',
+    component: () => import('@/views/onboarding/mentor/MentorOnboardingView.vue'),
+    alias: ['/mentor/onboarding/'],
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/leener/onboarding/objectives',
+    name: 'leener-onboarding-objectives',
     component: () => import('@/views/onboarding/leener/LeenerObjectivesView.vue'),
-    meta: { guestOnly: true },
+    meta: { requiresAuth: true },
   },
   {
-    path: '/onboarding/leener/choice-theme',
-    name: 'onboarding-leener-choice-theme',
+    path: '/leener/onboarding/themes',
+    name: 'leener-onboarding-themes',
     component: () => import('@/views/onboarding/leener/LeenerThemeChoiceView.vue'),
-    meta: { guestOnly: true },
-  },
-  {
-    path: '/onboarding/leener/profile',
-    name: 'onboarding-leener-profile',
-    component: () => import('@/views/onboarding/leener/LeenerProfileView.vue'),
-    meta: { guestOnly: true },
-  },
-  {
-    path: '/onboarding/mentor',
-    name: 'onboarding-mentor',
-    component: () => import('@/views/onboarding/mentor/MentorProfileView.vue'),
-    meta: { guestOnly: true },
+    meta: { requiresAuth: true },
   },
 
   {
@@ -83,7 +80,7 @@ const router = createRouter({ history: createWebHistory(), routes })
 
 router.beforeEach(async (to) => {
   const store = useAuthStore()
-  const needsSessionCheck = to.meta.requiresAuth || to.path.startsWith('/auth/')
+  const needsSessionCheck = to.meta.requiresAuth || to.meta.guestOnly || to.path.startsWith('/auth/')
 
   if (needsSessionCheck) {
     await store.ensureSession()

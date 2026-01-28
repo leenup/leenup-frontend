@@ -39,7 +39,7 @@
               type="button"
               class="absolute inset-y-0 right-3 flex items-center text-secondary-700 transition hover:text-primary-600"
               @click="showPassword = !showPassword"
-              :aria-pressed="showPassword.toString()"
+              :aria-pressed="showPassword"
               :title="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
             >
               <component :is="showPassword ? IconEyeOff : IconEye" />

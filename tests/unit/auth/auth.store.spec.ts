@@ -164,7 +164,13 @@ describe('useAuthStore', () => {
 
   it('registerUser renvoie directement la promesse de service', async () => {
     const store = useAuthStore()
-    const payload = { email: 'a@b.com', plainPassword: 'p', firstName: 'John', lastName: 'Doe' }
+    const payload = {
+      email: 'a@b.com',
+      plainPassword: 'p',
+      firstName: 'John',
+      lastName: 'Doe',
+      profiles: ['leener'] as Array<'leener' | 'mentor'>,
+    }
     serviceMocks.register.mockResolvedValueOnce({ id: 42 })
 
     const response = await store.registerUser(payload)

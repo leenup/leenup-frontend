@@ -106,11 +106,6 @@ const fetchSkills = async () => {
 }
 
 onMounted(async () => {
-  onboardingStore.loadFromStorage()
-  if (onboardingStore.role !== 'leener') {
-    router.replace({ name: 'onboarding' })
-    return
-  }
   await fetchSkills()
 })
 
@@ -128,18 +123,11 @@ const toggleObjective = (skillId: number) => {
 const handleNext = () => {
   if (!canProceed.value) return
   onboardingStore.setLeenerObjectives([...selectedObjectives.value])
-  router.push({ name: 'onboarding-leener-choice-theme' })
+  router.push({ name: 'leener-onboarding-themes' })
 }
 
 const clearSession = () => {
-  onboardingStore.clearLeenerObjectives()
-  onboardingStore.clearLeenerThemes()
-  onboardingStore.clearRole()
-  if (typeof window !== 'undefined') {
-    window.sessionStorage.removeItem('onboarding_role')
-    window.sessionStorage.removeItem('onboarding_leener_objectives')
-    window.sessionStorage.removeItem('onboarding_leener_themes')
-  }
+  onboardingStore.clear()
 }
 
 const handleBackNavigation = () => {
@@ -149,6 +137,6 @@ const handleBackNavigation = () => {
 const confirmBackNavigation = () => {
   clearSession()
   showBackDialog.value = false
-  router.push({ name: 'onboarding' })
+  router.push({ name: 'discover' })
 }
 </script>

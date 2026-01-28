@@ -10,19 +10,20 @@ type OnboardingFormState = {
   acceptTerms: boolean
 }
 
+type Profile = 'leener' | 'mentor'
+
 type UseOnboardingRegistrationOptions = {
+  profile: Profile
   afterSuccess: (firstName: string) => void
   buildPayload?: (form: OnboardingFormState) => RegisterPayload
 }
 
-const DEFAULT_PAYLOAD = (form: OnboardingFormState): RegisterPayload => ({
+const DEFAULT_PAYLOAD = (form: OnboardingFormState, profile: Profile): RegisterPayload => ({
   email: form.email,
   plainPassword: form.password,
   firstName: form.firstName,
   lastName: form.lastName,
-  avatarUrl: '',
-  bio: '',
-  location: '',
+  profiles: [profile],
   timezone: 'Europe/Paris',
   locale: 'fr',
 })
@@ -116,7 +117,7 @@ export function useOnboardingRegistration(options: UseOnboardingRegistrationOpti
     clearTimer()
 
     try {
-      const payloadBuilder = options.buildPayload ?? DEFAULT_PAYLOAD
+      const payloadBuilder = options.buildPayload ?? ((state: OnboardingFormState) => DEFAULT_PAYLOAD(state, options.profile))
       const user = await registerRequest(payloadBuilder(form))
       await authStore.authenticate({ email: form.email, password: form.password })
       const firstNameFromDb = (user as any)?.firstName ?? form.firstName
