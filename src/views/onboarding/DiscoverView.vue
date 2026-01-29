@@ -5,8 +5,8 @@
         <BackButton />
       </header>
 
-      <section class="grid items-center gap-6 md:grid-cols-[auto,1fr]">
-        <IconCoucou class="h-20 w-20 text-secondary-600" />
+      <section class="flex items-start gap-4">
+        <IconCoucou class="h-20 w-20 flex-shrink-0 text-secondary-600" />
         <div class="rounded-400 bg-surface-panel px-4 py-3 text-left text-primary-400 shadow-e-100">
           Bienvenue ! Moi c'est "...", je t'accompagne pas à pas pour créer ton profil leener.
         </div>
@@ -19,13 +19,13 @@
         </div>
       </section>
 
-      <section class="grid gap-6 md:grid-cols-[1fr,auto] md:items-center">
+      <section class="flex justify-end items-start gap-4">
         <div class="font-sans font-bold rounded-400 bg-surface-panel text-primary-400 px-4 py-3 shadow-e-100">
           <p>
             Ici tu peux, <span class="font-sans font-extrabold">être mentor ET apprenant</span>
           </p>
         </div>
-        <IconCoucou class="h-20 w-20 text-secondary-600 -scale-x-100" />
+        <IconCoucou class="h-20 w-20 flex-shrink-0 text-secondary-600 -scale-x-100" />
       </section>
 
       <section class="rounded-400 bg-surface-panel px-6 py-10 text-center text-primary-700 shadow-e-200 border border-secondary-200">
@@ -59,8 +59,8 @@
         </div>
       </section>
 
-      <section class="grid gap-6 md:grid-cols-[auto,1fr] md:items-center">
-        <IconCoucou class="h-20 w-20 text-secondary-600" />
+      <section class="flex items-start gap-4">
+        <IconCoucou class="h-20 w-20 flex-shrink-0 text-secondary-600" />
         <div class="rounded-400 bg-surface-panel px-4 py-3 text-primary-400 shadow-e-100">
           Savais-tu que 90% des leeners... etc
         </div>
