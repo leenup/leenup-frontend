@@ -9,13 +9,12 @@
       <section class="grid items-start gap-4 md:grid-cols-[auto,1fr]">
         <IconCoucou class="h-20 w-20 text-primary-600" />
         <div class="font-sans text rounded-400 bg-surface-panel px-4 py-3 text-primary-600 shadow-e-100">
-          Un dernier clic et on part à l'aventure ensemble !
+          On est content de te revoir !
         </div>
       </section>
 
       <section class="text-center space-y-2">
-        <h1 class="font-sans h2 font-bold">Lorem ipsum</h1>
-        <p class="font-sans h3 text-primary-600">Lorem ipsum dolor sit amet, lorem ipsum.</p>
+        <h1 class="font-sans h2 font-bold">Connexion</h1>
       </section>
 
       <form class="space-y-4" @submit.prevent="onSubmit">
