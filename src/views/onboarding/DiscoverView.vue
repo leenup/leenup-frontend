@@ -1,5 +1,5 @@
 <template>
-  <main class="min-h-screen bg-surface-bg text-primary-600">
+  <main class="min-h-screen text-primary-600">
     <div class="mx-auto flex max-w-3xl flex-col gap-8 px-6 py-8">
       <header class="flex items-center justify-start">
         <BackButton />
@@ -8,7 +8,7 @@
       <section class="flex items-start gap-4">
         <IconCoucou class="h-20 w-20 flex-shrink-0 text-secondary-600" />
         <div class="rounded-400 bg-surface-panel px-4 py-3 text-left text-primary-400 shadow-e-100">
-          Bienvenue ! Moi c'est "...", je t'accompagne pas à pas pour créer ton profil leener.
+          Bienvenue ! Moi c'est Léo, je t'accompagne pas à pas pour créer ton profil leener.
         </div>
       </section>
 
