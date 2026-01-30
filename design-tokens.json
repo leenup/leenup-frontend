@@ -39,24 +39,37 @@
       "800": "#a01a14",
       "900": "#480a07"
     },
+    "neutral": {
+      "DEFAULT": "#229bb8",
+      "50": "#eefbfc",
+      "100": "#d5f3f8",
+      "200": "#b1e6f0",
+      "300": "#7bd4e5",
+      "400": "#3eb7d2",
+      "500": "#229bb8",
+      "600": "#1f7d9b",
+      "700": "#20657e",
+      "800": "#225368",
+      "900": "#091921"
+    },
     "support": {
       "secondary": "#a537fd",
       "secondary-700": "#7113b6",
       "accent": "#f9564f"
     },
     "surface": {
-      "bg": "#faf4ff",
+      "bg": "#eefbfc",
       "panel": "#ffffff",
-      "muted": "#f4e6ff",
+      "muted": "#d5f3f8",
       "white": "#ffffff",
-      "button": "#fff2f1",
+      "button": "#ffffff",
       "fg": "#091921",
-      "header": "#ead1ff"
+      "header": "#b1e6f0"
     },
     "text": {
       "primary": "#091921",
       "muted": "#225368",
-      "button": "#fff2f1"
+      "button": "#ffffff"
     }
   },
   "radii": {
