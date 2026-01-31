@@ -1,5 +1,5 @@
 ﻿<template>
-  <main class="flex min-h-dvh flex-col items-center justify-center px-6 py-8 text-center text-text-primary">
+  <main class="flex min-h-dvh flex-col bg-primary-100 items-center justify-center px-6 py-8 text-center text-text-primary">
     <img src="@/assets/brand/logo/Logo.svg" alt="Leenup" class="h-[clamp(3rem,6vw,4rem)]" />
 
     <div class="mt-6 flex w-full max-w-[min(42rem,92vw)] items-end justify-between">
