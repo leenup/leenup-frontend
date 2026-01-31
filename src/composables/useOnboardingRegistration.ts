@@ -1,4 +1,4 @@
-import { computed, onBeforeUnmount, reactive, ref } from 'vue'
+﻿import { computed, onBeforeUnmount, reactive, ref } from 'vue'
 import { register as registerRequest, type RegisterPayload } from '@/services/auth.service'
 import { useAuthStore } from '@/stores/auth'
 
@@ -11,6 +11,7 @@ type OnboardingFormState = {
 }
 
 type Profile = 'leener' | 'mentor'
+type ApiProfile = 'student' | 'mentor'
 
 type UseOnboardingRegistrationOptions = {
   profile: Profile
@@ -18,12 +19,14 @@ type UseOnboardingRegistrationOptions = {
   buildPayload?: (form: OnboardingFormState) => RegisterPayload
 }
 
+const toApiProfile = (profile: Profile): ApiProfile => (profile === 'leener' ? 'student' : 'mentor')
+
 const DEFAULT_PAYLOAD = (form: OnboardingFormState, profile: Profile): RegisterPayload => ({
   email: form.email,
   plainPassword: form.password,
   firstName: form.firstName,
   lastName: form.lastName,
-  profiles: [profile],
+  profiles: [toApiProfile(profile)],
   timezone: 'Europe/Paris',
   locale: 'fr',
 })
@@ -39,6 +42,16 @@ export function useOnboardingRegistration(options: UseOnboardingRegistrationOpti
     networkError: isFrench
       ? 'Connexion serveur impossible. Vérifie ta connexion ou réessaie plus tard.'
       : 'Unable to reach the server. Check your connection or try again later.',
+    certError: isFrench
+      ? 'Certificat HTTPS non approuvé. Accepte le certificat local puis réessaie.'
+      : 'HTTPS certificate not trusted. Accept the local certificate then retry.',
+    corsError: isFrench
+      ? 'Requête bloquée (CORS). Vérifie que le backend autorise ' + `${globalThis.location.origin}.`
+      : 'Request blocked (CORS). Check backend allows http://localhost:4000.',
+    validationError: isFrench ? 'Champs invalides. Vérifie les informations saisies.' : 'Invalid fields. Check your input.',
+    conflictError: isFrench ? 'Cet email est déjà utilisé.' : 'This email is already in use.',
+    unauthorizedError: isFrench ? 'Accès non autorisé.' : 'Unauthorized access.',
+    serverError: isFrench ? 'Erreur serveur. Réessaie plus tard.' : 'Server error. Try again later.',
   }
 
   const messageDictionary: Record<string, string> = {
@@ -93,18 +106,32 @@ export function useOnboardingRegistration(options: UseOnboardingRegistrationOpti
   }
 
   const formatErrorMessage = (err: unknown) => {
-    const responseData = (err as any)?.response?.data
+    const response = (err as any)?.response
+    const responseData = response?.data
     if (Array.isArray(responseData?.violations) && responseData.violations.length > 0) {
       const violation = responseData.violations[0]
       const translatedMessage = translateText(violation.message)
       if (translatedMessage) return translatedMessage
+      return staticMessages.validationError
     }
     if (typeof responseData?.detail === 'string') return translateText(responseData.detail) ?? staticMessages.genericError
     if (typeof responseData?.message === 'string') return translateText(responseData.message) ?? staticMessages.genericError
+
     const message = (err as Error)?.message
-    if (message?.toLowerCase().includes('network')) {
-      return staticMessages.networkError
+    const code = (err as any)?.code
+    const normalized = (message ?? '').toLowerCase()
+
+    if (normalized.includes('err_cert_authority_invalid') || normalized.includes('certificate')) {
+      return staticMessages.certError
     }
+    if (code === 'ERR_NETWORK' || normalized.includes('network error')) {
+      return staticMessages.corsError
+    }
+    if (response?.status === 422) return staticMessages.validationError
+    if (response?.status === 409) return staticMessages.conflictError
+    if (response?.status === 401) return staticMessages.unauthorizedError
+    if (response?.status >= 500) return staticMessages.serverError
+
     return message || staticMessages.genericError
   }
 
