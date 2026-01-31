@@ -89,13 +89,19 @@ const errorMessage = ref('')
 const successMessage = ref('')
 let redirectTimer: ReturnType<typeof setTimeout> | undefined
 
-const translateError = (msg?: string) => {
-  if (!msg) return 'Une erreur est survenue. Merci de reessayer.'
+const translateError = (err: any) => {
+  const msg = err?.response?.data?.message || err?.response?.data?.error || err?.message
+  if (!msg) return 'Une erreur est survenue. Merci de réessayer.'
   const normalized = msg.toLowerCase()
-  if (normalized.includes('network')) return 'Connexion serveur impossible. Verifie ta connexion ou reessaye plus tard.'
-  if (normalized.includes('expired') || normalized.includes('jwt')) return 'Votre session a expire, merci de vous reconnecter.'
-  if (normalized.includes('invalid') || normalized.includes('bad credentials')) return 'Identifiants incorrects. Verifiez votre email et votre mot de passe.'
-  if (normalized.includes('unauthorized')) return 'Vous netes pas autorise. Merci de vous reconnecter.'
+  if (normalized.includes('err_cert_authority_invalid') || normalized.includes('certificate')) {
+    return 'Certificat HTTPS non approuvé. Accepte le certificat local puis réessaie.'
+  }
+  if (err?.code === 'ERR_NETWORK' || normalized.includes('network error')) {
+    return 'Requête bloquée (CORS) ou serveur inaccessible. Vérifie la config.'
+  }
+  if (normalized.includes('expired') || normalized.includes('jwt')) return 'Votre session a expiré, merci de vous reconnecter.'
+  if (normalized.includes('invalid') || normalized.includes('bad credentials')) return 'Identifiants incorrects. Vérifie ton email et ton mot de passe.'
+  if (normalized.includes('unauthorized')) return 'Vous n’êtes pas autorisé. Merci de vous reconnecter.'
   return msg
 }
 
@@ -119,8 +125,7 @@ const onSubmit = async () => {
       router.push(resolveDashboardRoute())
     }, 5000)
   } catch (err: any) {
-    const apiMessage = err?.response?.data?.message || err?.response?.data?.error || err?.message
-    errorMessage.value = translateError(apiMessage)
+    errorMessage.value = translateError(err)
   }
 }
 </script>

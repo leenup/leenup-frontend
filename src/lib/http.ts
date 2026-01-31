@@ -28,7 +28,7 @@ http.interceptors.request.use((config) => {
     const token = readCsrfToken()
     if (token) {
       config.headers = config.headers ?? {}
-      config.headers['X-XSRF-TOKEN'] = token
+      config.headers['X-CSRF-TOKEN'] = token
     }
   }
   config.withCredentials = true

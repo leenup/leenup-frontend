@@ -10,15 +10,27 @@ import {
 
 export type AuthUser = {
   id: string | number
-  firstName: string
-  lastName: string
   email: string
-  phone?: string | null
-  birthDate?: string | null
-  createdAt?: string
-  updatedAt?: string
-  is_leener?: boolean
+  roles?: string[]
+  created_at?: string
+  updated_at?: string
+  first_name?: string
+  last_name?: string
+  avatar_url?: string | null
+  bio?: string | null
+  location?: string | null
+  timezone?: string | null
+  locale?: string | null
+  is_active?: boolean
+  last_login_at?: string | null
+  average_rating?: number | null
+  birthdate?: string | null
+  languages?: string[]
+  exchange_format?: string
+  learning_styles?: string[]
   is_mentor?: boolean
+  token_balance?: number | null
+  profiles?: Array<'mentor' | 'student'> | string[]
 }
 
 export type CredentialsPayload = { email: string; password: string }
@@ -41,7 +53,7 @@ export type RegisterPayload = {
   plainPassword: string
   firstName: string
   lastName: string
-  profiles: Array<'leener' | 'mentor'>
+  profiles: Array<'student' | 'mentor'>
   avatarUrl?: string
   bio?: string
   location?: string
@@ -51,7 +63,7 @@ export type RegisterPayload = {
 }
 
 export type UpdateProfilePayload = Partial<
-  Pick<AuthUser, 'firstName' | 'lastName' | 'email' | 'phone' | 'birthDate'>
+  Pick<AuthUser, 'first_name' | 'last_name' | 'email' | 'birthdate'>
 >
 
 export type ChangePasswordPayload = {

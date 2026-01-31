@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 const Schema = z.object({
-  VITE_API_BASE_URL: z.string().url().default('http://localhost:3000'),
+  VITE_API_BASE_URL: z.string().url().default('http://localhost'),
   VITE_AUTH_LOGIN_PATH: z.string().default('/auth/login'),
   VITE_AUTH_ME_PATH: z.string().default('/me'),
   VITE_AUTH_EMAIL_PATH: z.string().default('/auth/login/email'),
