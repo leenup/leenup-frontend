@@ -26,24 +26,13 @@
             placeholder="monadresse@mail.com"
             class="w-full rounded-300 border border-secondary-300 bg-white px-4 py-3 text-primary-600 shadow-e-100 focus:border-cta-500 focus:outline-none focus:ring-2 focus:ring-cta-200"
           />
-          <div class="relative">
-            <input
-              v-model="password"
-              :type="showPassword ? 'text' : 'password'"
-              required
-              placeholder="Mot de passe"
-              class="w-full rounded-300 border border-secondary-300 bg-white px-4 py-3 pr-12 text-primary-600 shadow-e-100 focus:border-cta-500 focus:outline-none focus:ring-2 focus:ring-cta-200"
-            />
-            <button
-              type="button"
-              class="absolute inset-y-0 right-3 flex items-center text-secondary-700 transition hover:text-primary-600"
-              @click="showPassword = !showPassword"
-              :aria-pressed="showPassword"
-              :title="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
-            >
-              <component :is="showPassword ? IconEyeOff : IconEye" />
-            </button>
-          </div>
+          <PasswordField
+            v-model="password"
+            required
+            placeholder="Mot de passe"
+            autocomplete="current-password"
+            class="w-full rounded-300 border border-secondary-300 bg-white px-4 py-3 text-primary-600 shadow-e-100 focus:border-cta-500 focus:outline-none focus:ring-2 focus:ring-cta-200"
+          />
         </div>
 
         <button
@@ -72,11 +61,10 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import BackButton from '@/components/common/BackButton.vue'
+import PasswordField from '@/components/common/PasswordField.vue'
 import ProgressBar from '@/components/common/ProgressBar.vue'
 import IconCoucou from '@/components/icons/IconCoucou.vue'
 import IconUser from '@/components/icons/IconHome.vue'
-import IconEye from '@/components/icons/IconEye.vue'
-import IconEyeOff from '@/components/icons/IconEyeOff.vue'
 import { useAuthStore } from '@/stores/auth'
 import Toast from '@/components/common/Toast.vue'
 
@@ -84,7 +72,6 @@ const router = useRouter()
 const authStore = useAuthStore()
 const email = ref('')
 const password = ref('')
-const showPassword = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
 let redirectTimer: ReturnType<typeof setTimeout> | undefined

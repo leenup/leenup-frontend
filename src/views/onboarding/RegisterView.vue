@@ -44,12 +44,12 @@
           <div class="rounded-300 border border-secondary-200 bg-white p-4 shadow-e-100">
             <label class="block text-left text-sm font-semibold text-primary-700">
               Mot de passe
-              <input
+              <PasswordField
                 v-model="form.password"
-                type="password"
                 required
                 class="mt-1 w-full rounded-300 border border-secondary-200 bg-white px-3 py-2 text-primary-700 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
                 aria-describedby="password-help"
+                autocomplete="new-password"
               />
             </label>
             <ul id="password-help" class="mt-3 space-y-1 text-sm">
@@ -138,6 +138,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import OnboardingStepHeader from '@/components/onboarding/OnboardingStepHeader.vue'
+import PasswordField from '@/components/common/PasswordField.vue'
 import Toast from '@/components/common/Toast.vue'
 import { useOnboardingRegistration } from '@/composables/useOnboardingRegistration'
 
