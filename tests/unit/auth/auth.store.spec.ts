@@ -169,7 +169,7 @@ describe('useAuthStore', () => {
       plainPassword: 'p',
       firstName: 'John',
       lastName: 'Doe',
-      profiles: ['leener'] as Array<'leener' | 'mentor'>,
+      profiles: ['student'] as Array<'student' | 'mentor'>,
     }
     serviceMocks.register.mockResolvedValueOnce({ id: 42 })
 

@@ -12,8 +12,8 @@
       </div>
     </div>
     <div class="w-full flex-1 px-6 pb-6 pt-5 text-center">
-      <h3 class="font-sans text-2xl mb-2 text-primary-800">{{ title }}</h3>
-      <p class="leading-relaxed font-sans text-secondary-700">{{ description }}</p>
+      <h3 class="font-sans text-2xl font-extrabold mb-2">{{ title }}</h3>
+      <p class="leading-relaxed font-sans">{{ description }}</p>
     </div>
     <slot />
   </article>

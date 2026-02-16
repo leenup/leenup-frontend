@@ -6,9 +6,9 @@
     <!-- TODO: Remplacer '#' par l'URL de la landing page (site vitrine Leenup) -->
     <a href="#" class="block">
       <img
-        src="@/assets/brand/logo/LogoSlogan.svg"
+        src="@/assets/brand/logo/logo.svg"
         alt="Leenup"
-        class="h-20 md:h-32"
+        class="h-20 md:h-32 text-primary-500"
       />
     </a>
   </div>

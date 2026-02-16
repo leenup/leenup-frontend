@@ -22,12 +22,12 @@ describe('useOnboardingRegistration', () => {
     authStoreMock.authenticate.mockReset()
   })
 
-  it('envoie le profil selectionne dans le payload', async () => {
+  it('mappe le profil leener vers student', async () => {
     registerMock.mockResolvedValueOnce({ firstName: 'Jane' })
     authStoreMock.authenticate.mockResolvedValueOnce({})
 
     const { form, canSubmit, onSubmit } = useOnboardingRegistration({
-      profile: 'mentor',
+      profile: 'leener',
       afterSuccess: vi.fn(),
     })
 
@@ -43,7 +43,7 @@ describe('useOnboardingRegistration', () => {
 
     expect(registerMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        profiles: ['mentor'],
+        profiles: ['student'],
       })
     )
     expect(authStoreMock.authenticate).toHaveBeenCalledWith({

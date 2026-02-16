@@ -9,13 +9,12 @@
       <section class="grid items-start gap-4 md:grid-cols-[auto,1fr]">
         <IconCoucou class="h-20 w-20 text-primary-600" />
         <div class="font-sans text rounded-400 bg-surface-panel px-4 py-3 text-primary-600 shadow-e-100">
-          Un dernier clic et on part à l'aventure ensemble !
+          On est content de te revoir !
         </div>
       </section>
 
       <section class="text-center space-y-2">
-        <h1 class="font-sans h2 font-bold">Lorem ipsum</h1>
-        <p class="font-sans h3 text-primary-600">Lorem ipsum dolor sit amet, lorem ipsum.</p>
+        <h1 class="font-sans h2 font-bold">Connexion</h1>
       </section>
 
       <form class="space-y-4" @submit.prevent="onSubmit">
@@ -27,24 +26,13 @@
             placeholder="monadresse@mail.com"
             class="w-full rounded-300 border border-secondary-300 bg-white px-4 py-3 text-primary-600 shadow-e-100 focus:border-cta-500 focus:outline-none focus:ring-2 focus:ring-cta-200"
           />
-          <div class="relative">
-            <input
-              v-model="password"
-              :type="showPassword ? 'text' : 'password'"
-              required
-              placeholder="Mot de passe"
-              class="w-full rounded-300 border border-secondary-300 bg-white px-4 py-3 pr-12 text-primary-600 shadow-e-100 focus:border-cta-500 focus:outline-none focus:ring-2 focus:ring-cta-200"
-            />
-            <button
-              type="button"
-              class="absolute inset-y-0 right-3 flex items-center text-secondary-700 transition hover:text-primary-600"
-              @click="showPassword = !showPassword"
-              :aria-pressed="showPassword"
-              :title="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
-            >
-              <component :is="showPassword ? IconEyeOff : IconEye" />
-            </button>
-          </div>
+          <PasswordField
+            v-model="password"
+            required
+            placeholder="Mot de passe"
+            autocomplete="current-password"
+            class="w-full rounded-300 border border-secondary-300 bg-white px-4 py-3 text-primary-600 shadow-e-100 focus:border-cta-500 focus:outline-none focus:ring-2 focus:ring-cta-200"
+          />
         </div>
 
         <button
@@ -73,11 +61,10 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import BackButton from '@/components/common/BackButton.vue'
+import PasswordField from '@/components/common/PasswordField.vue'
 import ProgressBar from '@/components/common/ProgressBar.vue'
 import IconCoucou from '@/components/icons/IconCoucou.vue'
 import IconUser from '@/components/icons/IconHome.vue'
-import IconEye from '@/components/icons/IconEye.vue'
-import IconEyeOff from '@/components/icons/IconEyeOff.vue'
 import { useAuthStore } from '@/stores/auth'
 import Toast from '@/components/common/Toast.vue'
 
@@ -85,18 +72,23 @@ const router = useRouter()
 const authStore = useAuthStore()
 const email = ref('')
 const password = ref('')
-const showPassword = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
 let redirectTimer: ReturnType<typeof setTimeout> | undefined
 
-const translateError = (msg?: string) => {
-  if (!msg) return 'Une erreur est survenue. Merci de reessayer.'
+const translateError = (err: any) => {
+  const msg = err?.response?.data?.message || err?.response?.data?.error || err?.message
+  if (!msg) return 'Une erreur est survenue. Merci de réessayer.'
   const normalized = msg.toLowerCase()
-  if (normalized.includes('network')) return 'Connexion serveur impossible. Verifie ta connexion ou reessaye plus tard.'
-  if (normalized.includes('expired') || normalized.includes('jwt')) return 'Votre session a expire, merci de vous reconnecter.'
-  if (normalized.includes('invalid') || normalized.includes('bad credentials')) return 'Identifiants incorrects. Verifiez votre email et votre mot de passe.'
-  if (normalized.includes('unauthorized')) return 'Vous netes pas autorise. Merci de vous reconnecter.'
+  if (normalized.includes('err_cert_authority_invalid') || normalized.includes('certificate')) {
+    return 'Certificat HTTPS non approuvé. Accepte le certificat local puis réessaie.'
+  }
+  if (err?.code === 'ERR_NETWORK' || normalized.includes('network error')) {
+    return 'Requête bloquée (CORS) ou serveur inaccessible. Vérifie la config.'
+  }
+  if (normalized.includes('expired') || normalized.includes('jwt')) return 'Votre session a expiré, merci de vous reconnecter.'
+  if (normalized.includes('invalid') || normalized.includes('bad credentials')) return 'Identifiants incorrects. Vérifie ton email et ton mot de passe.'
+  if (normalized.includes('unauthorized')) return 'Vous n’êtes pas autorisé. Merci de vous reconnecter.'
   return msg
 }
 
@@ -120,8 +112,7 @@ const onSubmit = async () => {
       router.push(resolveDashboardRoute())
     }, 5000)
   } catch (err: any) {
-    const apiMessage = err?.response?.data?.message || err?.response?.data?.error || err?.message
-    errorMessage.value = translateError(apiMessage)
+    errorMessage.value = translateError(err)
   }
 }
 </script>

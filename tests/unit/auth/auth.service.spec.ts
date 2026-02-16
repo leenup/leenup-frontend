@@ -94,7 +94,7 @@ describe('auth.service', () => {
       lastName: 'Doe',
       email: 'john@example.com',
       plainPassword: 'secret',
-      profiles: ['mentor'] as Array<'leener' | 'mentor'>,
+      profiles: ['mentor'] as Array<'student' | 'mentor'>,
     }
     const user = { id: 1, email: payload.email }
     httpSpies.post.mockResolvedValueOnce({ data: user })

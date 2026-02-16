@@ -10,13 +10,7 @@
     <div class="relative overflow-hidden rounded-400">
       <div class="flex transition-transform duration-300 ease-out" :style="{ transform: `translateX(-${current * 100}%)` }">
         <div v-for="(s, i) in slides" :key="i" class="min-w-full">
-          <OnboardingSlide v-bind="s">
-            <template #default>
-              <div class="mt-4 flex items-center justify-center md:hidden">
-                <ProgressDots :index="current" :total="slides.length" @select="goTo" />
-              </div>
-            </template>
-          </OnboardingSlide>
+          <OnboardingSlide v-bind="s" />
         </div>
       </div>
 
@@ -43,7 +37,7 @@
     </div>
 
     <!-- Desktop progress below -->
-    <div class="mt-5 hidden items-center justify-center md:flex">
+    <div class="mt-5 flex items-center justify-center">
       <ProgressDots :index="current" :total="slides.length" @select="goTo" />
     </div>
   </div>
